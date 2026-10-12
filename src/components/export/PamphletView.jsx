@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Compass, BookOpen, Layers, CheckSquare, MapPin, Feather, Heart } from 'lucide-react';
+import { Compass, BookOpen, MapPin, Feather } from 'lucide-react';
 
 export default function PamphletView({
   species,
@@ -8,7 +8,7 @@ export default function PamphletView({
   overlaySettings,
   id = 'pamphlet-export-container',
 }) {
-  const [spreadMode, setSpreadMode] = useState('inside'); // 'inside' | 'outside' | 'both'
+  const [spreadMode, setSpreadMode] = useState('both'); // Default to 'both' so both pages are available for full brochure export
 
   const {
     showCommonNameTop,
@@ -20,35 +20,35 @@ export default function PamphletView({
     bottomStyle,
   } = overlaySettings;
 
-  // Split species evenly across inside panels (e.g. 3 panels)
-  const insideSpecies = species.slice(0, 12);
-  const panel1 = insideSpecies.slice(0, 4);
-  const panel2 = insideSpecies.slice(4, 8);
-  const panel3 = insideSpecies.slice(8, 12);
+  // In an authentic tri-fold brochure, feature 2 prominent species per panel (6 total featured inside)
+  // Remaining species are listed in the field checklist on the inside flap!
+  const insideSpecies = species.slice(0, 6);
+  const panel1 = insideSpecies.slice(0, 2);
+  const panel2 = insideSpecies.slice(2, 4);
+  const panel3 = insideSpecies.slice(4, 6);
 
   const heroSpecies = species[0] || {};
-  const heroPhoto = heroSpecies.photo?.largeUrl || heroSpecies.photo?.mediumUrl;
+  const heroPhoto = heroSpecies.photo?.mediumUrl || heroSpecies.photo?.largeUrl;
 
   const renderSpeciesTile = (s) => {
     if (!s) return null;
     const photo = s.photo;
-    const photoUrl = photo?.largeUrl || photo?.mediumUrl || photo?.squareUrl;
+    const photoUrl = photo?.mediumUrl || photo?.largeUrl || photo?.squareUrl;
     const authorName = photo?.photographer || 'Contributor';
     const licenseTag = showLicenseCode && photo?.licenseCode ? ` (${photo.licenseCode.toUpperCase()})` : '';
     const attributionText = `© ${authorName}${licenseTag}`;
 
     return (
-      <div key={s.id} className="border border-slate-200 rounded-lg overflow-hidden bg-white shadow-xs">
+      <div key={s.id} className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs flex flex-col justify-between">
         <div className="relative aspect-16/10 bg-slate-100 overflow-hidden">
           {photoUrl && (
             <img
               src={photoUrl}
               alt={s.commonName}
+              crossOrigin="anonymous"
               loading="eager"
               onError={(e) => {
-                if (photo?.mediumUrl && e.currentTarget.src !== photo.mediumUrl) {
-                  e.currentTarget.src = photo.mediumUrl;
-                } else if (photo?.squareUrl && e.currentTarget.src !== photo.squareUrl) {
+                if (photo?.squareUrl && e.currentTarget.src !== photo.squareUrl) {
                   e.currentTarget.src = photo.squareUrl;
                 }
               }}
@@ -73,12 +73,12 @@ export default function PamphletView({
                 {nameOrder === 'common_first' ? (
                   <>
                     {showCommonNameTop && (
-                      <div className="font-bold text-[11px] leading-tight truncate">
+                      <div className="font-bold text-[10px] leading-tight truncate">
                         {s.commonName}
                       </div>
                     )}
                     {showScientificNameTop && (
-                      <div className="text-[9px] italic leading-tight truncate opacity-90">
+                      <div className="text-[8.5px] italic leading-tight truncate opacity-90">
                         {s.scientificName}
                       </div>
                     )}
@@ -86,12 +86,12 @@ export default function PamphletView({
                 ) : (
                   <>
                     {showScientificNameTop && (
-                      <div className="font-bold text-[11px] italic leading-tight truncate">
+                      <div className="font-bold text-[10px] italic leading-tight truncate">
                         {s.scientificName}
                       </div>
                     )}
                     {showCommonNameTop && (
-                      <div className="text-[9px] leading-tight truncate opacity-90">
+                      <div className="text-[8.5px] leading-tight truncate opacity-90">
                         {s.commonName}
                       </div>
                     )}
@@ -123,12 +123,12 @@ export default function PamphletView({
           )}
         </div>
 
-        <div className="p-2 flex items-center justify-between">
-          <div className="overflow-hidden pr-1">
-            <div className="font-bold text-xs text-slate-800 truncate">{s.commonName}</div>
+        <div className="p-2.5 flex items-center justify-between">
+          <div className="overflow-hidden pr-2">
+            <div className="font-bold text-xs text-slate-900 truncate">{s.commonName}</div>
             <div className="text-[10px] italic text-slate-500 font-serif truncate">{s.scientificName}</div>
           </div>
-          <div className="w-3.5 h-3.5 border border-slate-400 rounded-xs shrink-0" title="Check when observed" />
+          <div className="w-4 h-4 border border-slate-400 rounded-xs shrink-0" title="Check when observed" />
         </div>
       </div>
     );
@@ -141,11 +141,22 @@ export default function PamphletView({
         <div className="flex items-center gap-2">
           <BookOpen className="w-4 h-4 text-emerald-600" />
           <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-            Tri-Fold Pamphlet Preview Mode:
+            Tri-Fold Brochure Spread:
           </span>
         </div>
 
         <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setSpreadMode('both')}
+            className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors ${
+              spreadMode === 'both'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            Both Spreads (2-Page Brochure)
+          </button>
           <button
             type="button"
             onClick={() => setSpreadMode('inside')}
@@ -155,7 +166,7 @@ export default function PamphletView({
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            Inside Spread (Species Grid)
+            Inside Spread Only
           </button>
           <button
             type="button"
@@ -166,97 +177,100 @@ export default function PamphletView({
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            Outside Spread (Cover & Back)
-          </button>
-          <button
-            type="button"
-            onClick={() => setSpreadMode('both')}
-            className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors ${
-              spreadMode === 'both'
-                ? 'bg-emerald-600 text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            View Both Spreads
+            Outside Spread Only
           </button>
         </div>
       </div>
 
       <div id={id} className="space-y-8 print:space-y-0">
-        {/* INSIDE SPREAD (3 Inner Panels: Left, Center, Right) */}
+        {/* PAGE 1: INSIDE SPREAD (3 Inner Panels: Left, Center, Right) */}
         {(spreadMode === 'inside' || spreadMode === 'both') && (
-          <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200 print:shadow-none print:p-0 print:border-none page-break-after">
-            <div className="text-center pb-3 mb-4 border-b border-emerald-800/20 text-xs font-bold text-emerald-800 uppercase tracking-widest">
-              🌿 {taxonName || 'Species'} of {placeName || 'Region'} • Inside Field Spread
+          <div
+            className="pdf-page bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200 page-break-after flex flex-col justify-between"
+            style={{ aspectRatio: '297 / 210', minHeight: '600px' }}
+          >
+            <div className="text-center pb-3 mb-4 border-b border-emerald-800/20 text-xs font-bold text-emerald-800 uppercase tracking-widest flex items-center justify-between">
+              <span>🌿 {taxonName || 'Species'} of {placeName || 'Region'}</span>
+              <span className="text-[10px] text-slate-400 font-normal">Page 1 • Inside Field Spread</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+            <div className="grid grid-cols-3 gap-4 md:gap-6 relative flex-1">
               {/* Fold Guide Line 1 */}
-              <div className="hidden md:block absolute left-1/3 top-0 bottom-0 border-r border-dashed border-slate-300 pointer-events-none -ml-3" />
+              <div className="absolute left-1/3 top-0 bottom-0 border-r border-dashed border-slate-300 pointer-events-none -ml-2" />
               {/* Fold Guide Line 2 */}
-              <div className="hidden md:block absolute left-2/3 top-0 bottom-0 border-r border-dashed border-slate-300 pointer-events-none -ml-3" />
+              <div className="absolute left-2/3 top-0 bottom-0 border-r border-dashed border-slate-300 pointer-events-none -ml-2" />
 
               {/* Panel 1 (Left) */}
-              <div className="space-y-3">
-                <div className="text-xs font-bold text-slate-600 uppercase tracking-wider pb-1 border-b border-slate-100 flex items-center justify-between">
+              <div className="space-y-3 flex flex-col justify-between">
+                <div className="text-xs font-bold text-slate-700 uppercase tracking-wider pb-1 border-b border-slate-100 flex items-center justify-between">
                   <span>Panel 1</span>
                   <span className="text-[10px] text-slate-400">Featured Species</span>
                 </div>
-                {panel1.map(renderSpeciesTile)}
+                <div className="space-y-3 flex-1">
+                  {panel1.map(renderSpeciesTile)}
+                </div>
               </div>
 
               {/* Panel 2 (Center) */}
-              <div className="space-y-3">
-                <div className="text-xs font-bold text-slate-600 uppercase tracking-wider pb-1 border-b border-slate-100 flex items-center justify-between">
+              <div className="space-y-3 flex flex-col justify-between">
+                <div className="text-xs font-bold text-slate-700 uppercase tracking-wider pb-1 border-b border-slate-100 flex items-center justify-between">
                   <span>Panel 2</span>
                   <span className="text-[10px] text-slate-400">Featured Species</span>
                 </div>
-                {panel2.map(renderSpeciesTile)}
+                <div className="space-y-3 flex-1">
+                  {panel2.map(renderSpeciesTile)}
+                </div>
               </div>
 
               {/* Panel 3 (Right) */}
-              <div className="space-y-3">
-                <div className="text-xs font-bold text-slate-600 uppercase tracking-wider pb-1 border-b border-slate-100 flex items-center justify-between">
+              <div className="space-y-3 flex flex-col justify-between">
+                <div className="text-xs font-bold text-slate-700 uppercase tracking-wider pb-1 border-b border-slate-100 flex items-center justify-between">
                   <span>Panel 3</span>
                   <span className="text-[10px] text-slate-400">Featured Species</span>
                 </div>
-                {panel3.map(renderSpeciesTile)}
+                <div className="space-y-3 flex-1">
+                  {panel3.map(renderSpeciesTile)}
+                </div>
               </div>
             </div>
 
             <div className="mt-4 pt-3 border-t border-slate-100 text-[10px] text-slate-400 flex items-center justify-between">
-              <span>Fold inward along dashed guidelines to create a pocket tri-fold guide</span>
-              <span>iNaturalist Citizen Science</span>
+              <span>Fold inward along dashed guidelines to form pocket brochure</span>
+              <span>iNaturalist Citizen Science Data</span>
             </div>
           </div>
         )}
 
-        {/* OUTSIDE SPREAD (Left Flap, Center Back Cover, Right Front Cover) */}
+        {/* PAGE 2: OUTSIDE SPREAD (Left Flap, Center Back Cover, Right Front Cover) */}
         {(spreadMode === 'outside' || spreadMode === 'both') && (
-          <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200 print:shadow-none print:p-0 print:border-none page-break-after">
-            <div className="text-center pb-3 mb-4 border-b border-emerald-800/20 text-xs font-bold text-emerald-800 uppercase tracking-widest">
-              🌿 {taxonName || 'Species'} of {placeName || 'Region'} • Outside Cover Spread
+          <div
+            className="pdf-page bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200 page-break-after flex flex-col justify-between"
+            style={{ aspectRatio: '297 / 210', minHeight: '600px' }}
+          >
+            <div className="text-center pb-3 mb-4 border-b border-emerald-800/20 text-xs font-bold text-emerald-800 uppercase tracking-widest flex items-center justify-between">
+              <span>🌿 {taxonName || 'Species'} of {placeName || 'Region'}</span>
+              <span className="text-[10px] text-slate-400 font-normal">Page 2 • Outside Cover Spread</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+            <div className="grid grid-cols-3 gap-4 md:gap-6 relative flex-1">
               {/* Fold Guide Line 1 */}
-              <div className="hidden md:block absolute left-1/3 top-0 bottom-0 border-r border-dashed border-slate-300 pointer-events-none -ml-3" />
+              <div className="absolute left-1/3 top-0 bottom-0 border-r border-dashed border-slate-300 pointer-events-none -ml-2" />
               {/* Fold Guide Line 2 */}
-              <div className="hidden md:block absolute left-2/3 top-0 bottom-0 border-r border-dashed border-slate-300 pointer-events-none -ml-3" />
+              <div className="absolute left-2/3 top-0 bottom-0 border-r border-dashed border-slate-300 pointer-events-none -ml-2" />
 
               {/* Left Column: Inside Flap Checklist */}
-              <div className="space-y-4 flex flex-col justify-between">
+              <div className="space-y-3 flex flex-col justify-between">
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm uppercase tracking-wider pb-1 border-b border-slate-200">
+                  <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider pb-1 border-b border-slate-200">
                     Field Checklist
                   </h4>
-                  <p className="text-xs text-slate-500 mt-1 mb-3">
-                    Check off species observed during your visit:
+                  <p className="text-[11px] text-slate-500 mt-1 mb-2">
+                    Check off species during your nature walk:
                   </p>
                   <div className="space-y-1.5 text-xs text-slate-700">
-                    {species.slice(0, 10).map((s, idx) => (
+                    {species.slice(0, 8).map((s, idx) => (
                       <div key={s.id} className="flex items-center justify-between py-1 border-b border-slate-100">
-                        <span className="truncate pr-2 font-medium">
+                        <span className="truncate pr-2 font-medium text-[11px]">
                           {idx + 1}. {s.commonName}
                         </span>
                         <div className="w-3.5 h-3.5 border border-slate-400 rounded-xs shrink-0" />
@@ -265,34 +279,34 @@ export default function PamphletView({
                   </div>
                 </div>
 
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-[11px] text-slate-600">
-                  <div className="font-bold text-slate-800 mb-1">Field Observation Tip:</div>
-                  Note time of day, weather, and specific habitat (canopy, underbrush, aquatic margin).
+                <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-[10px] text-slate-600">
+                  <div className="font-bold text-slate-800 mb-0.5">Observation Tip:</div>
+                  Note time, weather, and specific habitat layer.
                 </div>
               </div>
 
               {/* Center Column: Back Cover */}
-              <div className="space-y-4 flex flex-col justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div className="space-y-3 flex flex-col justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
                 <div>
-                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center mb-3">
-                    <Compass className="w-5 h-5" />
+                  <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center mb-2">
+                    <Compass className="w-4 h-4" />
                   </div>
-                  <h4 className="font-bold text-slate-900 text-sm">Citizen Science & iNaturalist</h4>
-                  <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                    This guide was compiled from research-grade observations recorded by naturalists worldwide. Every observation contributes to global biodiversity conservation.
+                  <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Citizen Science & iNaturalist</h4>
+                  <p className="text-[11px] text-slate-600 mt-1.5 leading-relaxed">
+                    This guide was compiled from research-grade observations. Every observation contributes to global biodiversity conservation.
                   </p>
 
-                  <div className="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-600">
-                    <div className="font-bold text-slate-800 mb-1">Record Your Own Sighting:</div>
-                    <ol className="list-decimal list-inside space-y-1 text-[11px]">
-                      <li>Download the free iNaturalist app</li>
-                      <li>Snap a photo of any plant or animal</li>
-                      <li>Share with the global nature community</li>
+                  <div className="mt-3 pt-2 border-t border-slate-200 text-[11px] text-slate-600">
+                    <div className="font-bold text-slate-800 mb-1">Record Your Sightings:</div>
+                    <ol className="list-decimal list-inside space-y-0.5 text-[10px]">
+                      <li>Open the free iNaturalist app</li>
+                      <li>Take a photo of any organism</li>
+                      <li>Share with nature scientists</li>
                     </ol>
                   </div>
                 </div>
 
-                <div className="text-[10px] text-slate-400 border-t border-slate-200 pt-2">
+                <div className="text-[9px] text-slate-400 border-t border-slate-200 pt-1.5">
                   All images licensed under Creative Commons. Respective author copyright credited on each photograph.
                 </div>
               </div>
@@ -300,40 +314,41 @@ export default function PamphletView({
               {/* Right Column: FRONT COVER */}
               <div className="bg-gradient-to-br from-emerald-800 to-teal-900 text-white p-5 rounded-xl flex flex-col justify-between shadow-md">
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-emerald-300 mb-1">
+                  <div className="text-[9px] font-bold uppercase tracking-widest text-emerald-300 mb-1">
                     Pocket Nature Guide
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-extrabold leading-tight">
+                  <h2 className="text-lg sm:text-xl font-extrabold leading-tight">
                     {taxonName || 'Wildlife'}
                   </h2>
-                  <div className="text-xs text-emerald-100 flex items-center gap-1 mt-1">
-                    <MapPin className="w-3.5 h-3.5" />
+                  <div className="text-[11px] text-emerald-100 flex items-center gap-1 mt-1">
+                    <MapPin className="w-3 h-3" />
                     <span>{placeName || 'Regional Area'}</span>
                   </div>
                 </div>
 
                 {/* Hero Photo */}
                 {heroPhoto && (
-                  <div className="my-4 rounded-lg overflow-hidden border border-emerald-600/40 shadow-inner relative aspect-4/3">
+                  <div className="my-3 rounded-lg overflow-hidden border border-emerald-600/40 shadow-inner relative aspect-4/3">
                     <img
                       src={heroPhoto}
                       alt={heroSpecies.commonName || 'Hero species'}
+                      crossOrigin="anonymous"
                       loading="eager"
                       onError={(e) => {
                         const hPhoto = heroSpecies.photo;
-                        if (hPhoto?.mediumUrl && e.currentTarget.src !== hPhoto.mediumUrl) {
-                          e.currentTarget.src = hPhoto.mediumUrl;
+                        if (hPhoto?.squareUrl && e.currentTarget.src !== hPhoto.squareUrl) {
+                          e.currentTarget.src = hPhoto.squareUrl;
                         }
                       }}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute bottom-1 right-1 bg-black/70 text-[9px] px-1.5 py-0.5 rounded text-white">
+                    <div className="absolute bottom-1 right-1 bg-black/70 text-[8px] px-1.5 py-0.5 rounded text-white">
                       {heroSpecies.commonName}
                     </div>
                   </div>
                 )}
 
-                <div className="text-center pt-2 border-t border-emerald-700/60 text-[11px] text-emerald-200">
+                <div className="text-center pt-2 border-t border-emerald-700/60 text-[10px] text-emerald-200">
                   <div className="font-semibold text-white">Foldable Field Pamphlet</div>
                   <div>BioGuide Studio</div>
                 </div>

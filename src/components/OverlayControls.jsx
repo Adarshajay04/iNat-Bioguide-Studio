@@ -218,8 +218,9 @@ export default function OverlayControls({
 
           <div className="relative rounded-lg overflow-hidden border border-slate-700 aspect-4/3 bg-slate-800 shadow-lg">
             <img
-              src="https://inaturalist-open-data.s3.amazonaws.com/photos/101327658/medium.jpg"
+              src="https://images.weserv.nl/?url=https%3A%2F%2Finaturalist-open-data.s3.amazonaws.com%2Fphotos%2F101327658%2Fmedium.jpg"
               alt="Sample species"
+              crossOrigin="anonymous"
               className="w-full h-full object-cover"
             />
 

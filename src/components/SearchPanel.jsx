@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, MapPin, Feather, Sparkles, Filter, Check, X, Loader2, ShieldCheck, Globe } from 'lucide-react';
-import { searchTaxa, searchPlaces, PRESETS } from '../services/inaturalist';
+import { searchTaxa, searchPlaces, PRESETS, toCorsSafeUrl } from '../services/inaturalist';
 
 export default function SearchPanel({
   onSearch,
@@ -207,8 +207,9 @@ export default function SearchPanel({
                     <div className="flex items-center gap-2.5 overflow-hidden">
                       {t.default_photo ? (
                         <img
-                          src={t.default_photo.square_url}
+                          src={toCorsSafeUrl(t.default_photo.square_url)}
                           alt={t.name}
+                          crossOrigin="anonymous"
                           className="w-7 h-7 rounded-md object-cover border border-slate-200"
                         />
                       ) : (

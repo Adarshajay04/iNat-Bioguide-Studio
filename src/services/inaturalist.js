@@ -5,14 +5,23 @@
 
 const BASE_URL = 'https://api.inaturalist.org/v1';
 
+// Make image URL CORS-safe for canvas/PDF capture
+export function toCorsSafeUrl(url) {
+  if (!url) return null;
+  if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+  if (url.includes('images.weserv.nl')) return url;
+  // Route all iNaturalist images through weserv proxy to avoid S3 CORS cache collision
+  return `https://images.weserv.nl/?url=${encodeURIComponent(url)}`;
+}
+
 // Upgrade square image URL to medium or large for crisp printing
 export function getOptimizedImageUrl(photo, size = 'large') {
   if (!photo) return null;
   const url = photo.medium_url || photo.url || photo.square_url;
   if (!url) return null;
   
-  // Replace size suffix in iNaturalist S3 URLs (e.g. /square.jpg -> /large.jpg)
-  return url.replace(/\/(square|small)\./i, `/${size}.`);
+  const upgraded = url.replace(/\/(square|small)\./i, `/${size}.`);
+  return toCorsSafeUrl(upgraded);
 }
 
 // Clean attribution string and photographer name
@@ -48,8 +57,8 @@ function mapTaxonSpecies(item) {
     wikipediaUrl: taxon.wikipedia_url,
     photo: photo ? {
       id: photo.id,
-      squareUrl: photo.square_url,
-      mediumUrl: photo.medium_url,
+      squareUrl: toCorsSafeUrl(photo.square_url),
+      mediumUrl: toCorsSafeUrl(photo.medium_url),
       largeUrl: getOptimizedImageUrl(photo, 'large'),
       originalUrl: getOptimizedImageUrl(photo, 'original'),
       attribution: formatAttribution(photo),

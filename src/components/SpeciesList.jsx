@@ -282,6 +282,7 @@ export default function SpeciesList({
                           <img
                             src={thumbUrl}
                             alt={s.commonName}
+                            crossOrigin="anonymous"
                             className="w-10 h-10 rounded-lg object-cover border border-slate-200"
                           />
                         ) : (

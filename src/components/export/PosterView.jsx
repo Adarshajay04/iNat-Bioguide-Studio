@@ -148,7 +148,7 @@ export default function PosterView({
       {/* POSTER CANVAS */}
       <div
         id={id}
-        className={`${currentTheme.wrapper} p-6 sm:p-10 rounded-2xl shadow-2xl border-4 transition-colors duration-200 print:shadow-none print:p-6 print:border-none`}
+        className={`pdf-page ${currentTheme.wrapper} p-6 sm:p-10 rounded-2xl shadow-2xl border-4 transition-colors duration-200 print:shadow-none print:p-6 print:border-none`}
       >
         {/* Poster Header Banner */}
         <div className={`text-center pb-8 mb-8 border-b-2 ${currentTheme.headerBorder}`}>
@@ -179,7 +179,7 @@ export default function PosterView({
         <div className={`grid ${getGridColsClass()}`}>
           {displayedSpecies.map((s, index) => {
             const photo = s.photo;
-            const photoUrl = photo?.largeUrl || photo?.mediumUrl || photo?.squareUrl;
+            const photoUrl = photo?.mediumUrl || photo?.largeUrl || photo?.squareUrl;
             const authorName = photo?.photographer || 'Contributor';
             const licenseTag = showLicenseCode && photo?.licenseCode ? ` (${photo.licenseCode.toUpperCase()})` : '';
             const attributionText = `© ${authorName}${licenseTag}`;
@@ -195,11 +195,10 @@ export default function PosterView({
                     <img
                       src={photoUrl}
                       alt={s.commonName}
+                      crossOrigin="anonymous"
                       loading="eager"
                       onError={(e) => {
-                        if (photo?.mediumUrl && e.currentTarget.src !== photo.mediumUrl) {
-                          e.currentTarget.src = photo.mediumUrl;
-                        } else if (photo?.squareUrl && e.currentTarget.src !== photo.squareUrl) {
+                        if (photo?.squareUrl && e.currentTarget.src !== photo.squareUrl) {
                           e.currentTarget.src = photo.squareUrl;
                         }
                       }}

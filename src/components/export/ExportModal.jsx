@@ -32,6 +32,7 @@ export default function ExportModal({
   const [activeTab, setActiveTab] = useState('field-guide'); // 'field-guide' | 'pamphlet' | 'poster'
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
+  const [exportProgress, setExportProgress] = useState('');
 
   if (!isOpen) return null;
 
@@ -55,6 +56,7 @@ export default function ExportModal({
   const handleDownloadPdf = async () => {
     try {
       setIsExporting(true);
+      setExportProgress('Preparing...');
       const containerId = getContainerId();
       const sanitizedName = `${taxonName || 'Species'}_${placeName || 'Guide'}`
         .replace(/[^a-zA-Z0-9_-]/g, '_')
@@ -62,14 +64,23 @@ export default function ExportModal({
       const filename = `${sanitizedName}_${activeTab}.pdf`;
       const orientation = activeTab === 'pamphlet' ? 'landscape' : 'portrait';
 
-      await downloadElementAsPdf(containerId, filename, orientation);
+      await downloadElementAsPdf(containerId, filename, orientation, (prog) => {
+        if (prog.status === 'loading-images') {
+          setExportProgress('Checking photos...');
+        } else if (prog.status === 'rendering-page') {
+          setExportProgress(`Page ${prog.page}/${prog.total}`);
+        } else if (prog.status === 'saving') {
+          setExportProgress('Saving PDF...');
+        }
+      });
       setExportSuccess(true);
       setTimeout(() => setExportSuccess(false), 2500);
     } catch (err) {
       console.error('PDF export failed:', err);
-      alert('Could not generate PDF directly. You can use the "Print / Save as PDF" button as a high-fidelity alternative!');
+      alert(`Direct PDF export error: ${err.message || err}\n\nTip: You can use the "Print / Save PDF" button for a 100% crisp vector PDF.`);
     } finally {
       setIsExporting(false);
+      setExportProgress('');
     }
   };
 
@@ -87,7 +98,7 @@ export default function ExportModal({
       setTimeout(() => setExportSuccess(false), 2500);
     } catch (err) {
       console.error('PNG export failed:', err);
-      alert('Could not generate PNG image. You can use Print / Save as PDF.');
+      alert(`PNG export error: ${err.message || err}\n\nTip: You can use "Print / Save PDF" as an alternative.`);
     } finally {
       setIsExporting(false);
     }
@@ -171,13 +182,21 @@ export default function ExportModal({
             title="Download direct PDF file"
           >
             {isExporting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <>
+                <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+                <span className="text-emerald-300 font-mono text-xs">{exportProgress || 'Generating...'}</span>
+              </>
             ) : exportSuccess ? (
-              <Check className="w-4 h-4 text-emerald-400" />
+              <>
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span>Downloaded!</span>
+              </>
             ) : (
-              <Download className="w-4 h-4" />
+              <>
+                <Download className="w-4 h-4" />
+                <span>Direct PDF</span>
+              </>
             )}
-            <span className="hidden sm:inline">Direct PDF</span>
           </button>
 
           {/* PNG image download for posters */}

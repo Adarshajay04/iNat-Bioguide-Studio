@@ -59,6 +59,7 @@ export default function SpeciesCard({
           <img
             src={photoUrl}
             alt={species.commonName}
+            crossOrigin="anonymous"
             loading="lazy"
             onLoad={() => setImgLoaded(true)}
             onError={(e) => {
