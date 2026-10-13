@@ -27,12 +27,15 @@ export default function ExportModal({
   placeName,
   taxonName,
   overlaySettings,
+  onChangePhoto,
+  loadingPhotoSpeciesId,
   onOpenSettings,
 }) {
   const [activeTab, setActiveTab] = useState('field-guide'); // 'field-guide' | 'pamphlet' | 'poster'
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
   const [exportProgress, setExportProgress] = useState('');
+  const [pdfQuality, setPdfQuality] = useState('ultra'); // 'ultra' (2.8x = 300 DPI) | 'high' (2.0x = 200 DPI) | 'standard' (1.5x)
 
   if (!isOpen) return null;
 
@@ -63,16 +66,23 @@ export default function ExportModal({
         .toLowerCase();
       const filename = `${sanitizedName}_${activeTab}.pdf`;
       const orientation = activeTab === 'pamphlet' ? 'landscape' : 'portrait';
+      const scale = pdfQuality === 'ultra' ? 2.8 : pdfQuality === 'high' ? 2.0 : 1.5;
 
-      await downloadElementAsPdf(containerId, filename, orientation, (prog) => {
-        if (prog.status === 'loading-images') {
-          setExportProgress('Checking photos...');
-        } else if (prog.status === 'rendering-page') {
-          setExportProgress(`Page ${prog.page}/${prog.total}`);
-        } else if (prog.status === 'saving') {
-          setExportProgress('Saving PDF...');
-        }
-      });
+      await downloadElementAsPdf(
+        containerId,
+        filename,
+        orientation,
+        (prog) => {
+          if (prog.status === 'loading-images') {
+            setExportProgress('Checking photos...');
+          } else if (prog.status === 'rendering-page') {
+            setExportProgress(`Page ${prog.page}/${prog.total}`);
+          } else if (prog.status === 'saving') {
+            setExportProgress('Saving PDF...');
+          }
+        },
+        scale
+      );
       setExportSuccess(true);
       setTimeout(() => setExportSuccess(false), 2500);
     } catch (err) {
@@ -152,6 +162,21 @@ export default function ExportModal({
 
         {/* Action Controls */}
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Quality Selector */}
+          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs">
+            <span className="text-[11px] font-bold text-slate-500 pl-1.5 hidden sm:inline">Quality:</span>
+            <select
+              value={pdfQuality}
+              onChange={(e) => setPdfQuality(e.target.value)}
+              className="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer"
+              title="Select PDF render quality"
+            >
+              <option value="ultra">🌟 Ultra 300 DPI (Print)</option>
+              <option value="high">✨ Crisp 200 DPI</option>
+              <option value="standard">⚡ Standard 150 DPI</option>
+            </select>
+          </div>
+
           <button
             type="button"
             onClick={onOpenSettings}
@@ -234,6 +259,8 @@ export default function ExportModal({
             taxonName={taxonName}
             overlaySettings={overlaySettings}
             id="field-guide-export-container"
+            onChangePhoto={onChangePhoto}
+            loadingPhotoSpeciesId={loadingPhotoSpeciesId}
           />
         )}
 
@@ -244,6 +271,8 @@ export default function ExportModal({
             taxonName={taxonName}
             overlaySettings={overlaySettings}
             id="pamphlet-export-container"
+            onChangePhoto={onChangePhoto}
+            loadingPhotoSpeciesId={loadingPhotoSpeciesId}
           />
         )}
 
@@ -254,6 +283,8 @@ export default function ExportModal({
             taxonName={taxonName}
             overlaySettings={overlaySettings}
             id="poster-export-container"
+            onChangePhoto={onChangePhoto}
+            loadingPhotoSpeciesId={loadingPhotoSpeciesId}
           />
         )}
       </div>

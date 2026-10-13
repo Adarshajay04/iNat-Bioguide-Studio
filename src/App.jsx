@@ -4,7 +4,7 @@ import SearchPanel from './components/SearchPanel';
 import OverlayControls from './components/OverlayControls';
 import SpeciesList from './components/SpeciesList';
 import ExportModal from './components/export/ExportModal';
-import { fetchSpeciesCounts, PRESETS } from './services/inaturalist';
+import { fetchSpeciesCounts, fetchTaxonPhotos, PRESETS } from './services/inaturalist';
 import { AlertCircle } from 'lucide-react';
 
 export default function App() {
@@ -137,6 +137,63 @@ export default function App() {
     setSelectedIds(new Set(topSlice.map((s) => s.id)));
   };
 
+  // Photo Switcher: Cycle to alternative photos for better visibility (bird face / features)
+  const [loadingPhotoSpeciesId, setLoadingPhotoSpeciesId] = useState(null);
+
+  const handleChangeSpeciesPhoto = async (speciesId, direction = 1) => {
+    const target = species.find((s) => s.id === speciesId);
+    if (!target) return;
+
+    // 1. If photosList is already fetched and has multiple photos
+    if (target.photosList && target.photosList.length > 1) {
+      const currentIdx = target.photoIndex !== undefined ? target.photoIndex : 0;
+      const nextIdx = (currentIdx + direction + target.photosList.length) % target.photosList.length;
+      const nextPhoto = target.photosList[nextIdx];
+
+      setSpecies((prev) =>
+        prev.map((s) =>
+          s.id === speciesId
+            ? { ...s, photo: nextPhoto, photoIndex: nextIdx }
+            : s
+        )
+      );
+      return;
+    }
+
+    // 2. Fetch alternative photos on-demand from iNaturalist
+    try {
+      setLoadingPhotoSpeciesId(speciesId);
+      const fetchedPhotos = await fetchTaxonPhotos(speciesId);
+
+      // Build complete unique photos list, preserving original default photo at front
+      let allPhotos = [...fetchedPhotos];
+      if (target.photo && !allPhotos.some((p) => p.id === target.photo.id)) {
+        allPhotos.unshift(target.photo);
+      }
+
+      if (allPhotos.length <= 1) {
+        // Only 1 photo exists on iNaturalist for this species
+        setLoadingPhotoSpeciesId(null);
+        return;
+      }
+
+      const nextIdx = 1;
+      const nextPhoto = allPhotos[nextIdx];
+
+      setSpecies((prev) =>
+        prev.map((s) =>
+          s.id === speciesId
+            ? { ...s, photosList: allPhotos, photo: nextPhoto, photoIndex: nextIdx }
+            : s
+        )
+      );
+    } catch (err) {
+      console.error('Failed to switch photo for species:', speciesId, err);
+    } finally {
+      setLoadingPhotoSpeciesId(null);
+    }
+  };
+
   // Filter species currently selected for export
   const selectedSpecies = species.filter((s) => selectedIds.has(s.id));
   const placeTitle = selectedPlace?.display_name || selectedPlace?.name || 'Region';
@@ -207,6 +264,8 @@ export default function App() {
           selectedTaxon={selectedTaxon}
           onFetchAllSpecies={handleFetchAllSpecies}
           isLoading={isLoading}
+          onChangePhoto={handleChangeSpeciesPhoto}
+          loadingPhotoSpeciesId={loadingPhotoSpeciesId}
         />
       </main>
 
@@ -218,6 +277,8 @@ export default function App() {
         placeName={placeTitle}
         taxonName={taxonTitle}
         overlaySettings={overlaySettings}
+        onChangePhoto={handleChangeSpeciesPhoto}
+        loadingPhotoSpeciesId={loadingPhotoSpeciesId}
         onOpenSettings={() => {
           setShowExportModal(false);
           setShowSettings(true);

@@ -43,6 +43,21 @@ export function formatAttribution(photo) {
   return '© iNaturalist Contributor';
 }
 
+export function mapPhotoObject(photo) {
+  if (!photo) return null;
+  return {
+    id: photo.id,
+    squareUrl: toCorsSafeUrl(photo.square_url || photo.url),
+    mediumUrl: toCorsSafeUrl(photo.medium_url || (photo.url ? photo.url.replace(/\/(square|small)\./i, '/medium.') : null)),
+    largeUrl: getOptimizedImageUrl(photo, 'large'),
+    originalUrl: getOptimizedImageUrl(photo, 'original'),
+    attribution: formatAttribution(photo),
+    rawAttribution: photo.attribution,
+    licenseCode: photo.license_code,
+    photographer: photo.attribution_name || 'Contributor',
+  };
+}
+
 function mapTaxonSpecies(item) {
   const taxon = item.taxon || {};
   const photo = taxon.default_photo;
@@ -55,18 +70,56 @@ function mapTaxonSpecies(item) {
     rank: taxon.rank || 'species',
     iconicTaxon: taxon.iconic_taxon_name || 'Life',
     wikipediaUrl: taxon.wikipedia_url,
-    photo: photo ? {
-      id: photo.id,
-      squareUrl: toCorsSafeUrl(photo.square_url),
-      mediumUrl: toCorsSafeUrl(photo.medium_url),
-      largeUrl: getOptimizedImageUrl(photo, 'large'),
-      originalUrl: getOptimizedImageUrl(photo, 'original'),
-      attribution: formatAttribution(photo),
-      rawAttribution: photo.attribution,
-      licenseCode: photo.license_code,
-      photographer: photo.attribution_name || 'Contributor',
-    } : null,
+    photo: mapPhotoObject(photo),
+    photoIndex: 0,
+    photosList: photo ? [mapPhotoObject(photo)] : [],
   };
+}
+
+/**
+ * Fetch alternative photos for a specific taxon.
+ * Returns up to 12 curated community photos so the user can choose one with better visibility.
+ */
+export async function fetchTaxonPhotos(taxonId) {
+  if (!taxonId) return [];
+
+  // 1. Try curated taxon photos from /taxa/{id}
+  try {
+    const res = await fetch(`${BASE_URL}/taxa/${taxonId}`, {
+      headers: { 'User-Agent': 'BioGuideStudio/1.0' },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const taxonPhotos = data.results?.[0]?.taxon_photos || [];
+      if (taxonPhotos.length > 0) {
+        return taxonPhotos.map((tp) => mapPhotoObject(tp.photo)).filter(Boolean);
+      }
+    }
+  } catch (err) {
+    console.warn('Could not fetch curated taxa photos, trying observations fallback:', err);
+  }
+
+  // 2. Fallback: Fetch photos from research grade observations
+  try {
+    const res = await fetch(
+      `${BASE_URL}/observations?taxon_id=${taxonId}&photos=true&quality_grade=research&per_page=12`,
+      { headers: { 'User-Agent': 'BioGuideStudio/1.0' } }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      const photos = [];
+      (data.results || []).forEach((obs) => {
+        (obs.photos || []).forEach((p) => {
+          photos.push(mapPhotoObject(p));
+        });
+      });
+      return photos.filter(Boolean);
+    }
+  } catch (err) {
+    console.error('Failed to fetch observation photos:', err);
+  }
+
+  return [];
 }
 
 /**

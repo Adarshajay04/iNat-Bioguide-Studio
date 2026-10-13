@@ -1,5 +1,5 @@
 import React from 'react';
-import { Compass, Calendar, MapPin, Feather, CheckSquare, Eye } from 'lucide-react';
+import { Compass, Calendar, MapPin, Feather, CheckSquare, Eye, RefreshCw, Loader2 } from 'lucide-react';
 
 export default function FieldGuideView({
   species,
@@ -7,12 +7,15 @@ export default function FieldGuideView({
   taxonName,
   overlaySettings,
   id = 'field-guide-export-container',
+  onChangePhoto,
+  loadingPhotoSpeciesId,
 }) {
   const {
     showCommonNameTop,
     showScientificNameTop,
     nameOrder,
     badgeStyle,
+    topPosition,
     showAuthorCopyright,
     showLicenseCode,
     bottomStyle,
@@ -60,9 +63,42 @@ export default function FieldGuideView({
             />
           )}
 
+          {/* PHOTO SWITCHER (Interactive in preview, excluded from print/PDF) */}
+          {onChangePhoto && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChangePhoto(s.id, 1);
+              }}
+              disabled={loadingPhotoSpeciesId === s.id}
+              className="no-print absolute top-2 right-2 z-20 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[10px] font-bold px-2 py-1 rounded-lg backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer group/btn"
+              title="Click to switch photo if the bird's face or body is hidden behind the name badge"
+            >
+              {loadingPhotoSpeciesId === s.id ? (
+                <Loader2 className="w-3 h-3 animate-spin text-emerald-400" />
+              ) : (
+                <RefreshCw className="w-3 h-3 text-emerald-400 transition-transform duration-300 group-hover/btn:rotate-180" />
+              )}
+              <span>
+                {s.photosList && s.photosList.length > 1
+                  ? `${(s.photoIndex ?? 0) + 1}/${s.photosList.length}`
+                  : 'Change Photo'}
+              </span>
+            </button>
+          )}
+
           {/* TOP OVERLAY: Common / Scientific Name */}
           {(showCommonNameTop || showScientificNameTop) && (
-            <div className="absolute top-2 left-2 right-2 flex justify-start pointer-events-none">
+            <div
+              className={`absolute top-2 left-2 right-16 flex pointer-events-none ${
+                topPosition === 'top-center'
+                  ? 'justify-center'
+                  : topPosition === 'top-right'
+                  ? 'justify-end'
+                  : 'justify-start'
+              }`}
+            >
               <div
                 className={`px-2 py-1 rounded-md max-w-full truncate ${
                   badgeStyle === 'frosted_dark'

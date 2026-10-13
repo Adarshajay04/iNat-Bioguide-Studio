@@ -82,7 +82,7 @@ export function inlineLoadedImagesAsDataUrls(container) {
         offCanvas.height = img.naturalHeight;
         const ctx = offCanvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
-        const dataUrl = offCanvas.toDataURL('image/jpeg', 0.92);
+        const dataUrl = offCanvas.toDataURL('image/jpeg', 0.96);
         if (dataUrl && dataUrl.length > 200) {
           img.src = dataUrl;
         }
@@ -174,7 +174,8 @@ export async function downloadElementAsPdf(
   elementId,
   fileName = 'inat-guide.pdf',
   orientation = 'portrait',
-  onProgress = null
+  onProgress = null,
+  scale = 2.5
 ) {
   const container = document.getElementById(elementId);
   if (!container) {
@@ -217,21 +218,21 @@ export async function downloadElementAsPdf(
       pdf.addPage([pageWidth, pageHeight], orientation);
     }
 
-    // Capture individual page without outer shadow, rounded corners or border
-    const canvas = await elementToCanvas(pageEl, 1.5, {
+    // Capture individual page at high DPI without outer shadow, rounded corners or border
+    const canvas = await elementToCanvas(pageEl, scale, {
       borderRadius: '0px',
       boxShadow: 'none',
       border: 'none',
       margin: '0px',
     });
 
-    const imgData = canvas.toDataURL('image/jpeg', 0.94);
+    const imgData = canvas.toDataURL('image/jpeg', 0.96);
     const canvasAspect = canvas.width / canvas.height;
     const pageAspect = pageWidth / pageHeight;
 
     // If aspect ratios match closely, fill page completely
     if (Math.abs(canvasAspect - pageAspect) < 0.15) {
-      pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
+      pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight, undefined, 'SLOW');
     } else {
       // Proportional fit centered on page (e.g. posters or custom aspects)
       let drawW = pageWidth;
@@ -249,7 +250,7 @@ export async function downloadElementAsPdf(
         offX = Math.max(0, (pageWidth - drawW) / 2);
       }
 
-      pdf.addImage(imgData, 'JPEG', offX, offY, drawW, drawH, undefined, 'FAST');
+      pdf.addImage(imgData, 'JPEG', offX, offY, drawW, drawH, undefined, 'SLOW');
     }
   }
 

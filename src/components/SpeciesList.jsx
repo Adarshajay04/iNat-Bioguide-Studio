@@ -29,6 +29,8 @@ export default function SpeciesList({
   selectedTaxon,
   onFetchAllSpecies,
   isLoading,
+  onChangePhoto,
+  loadingPhotoSpeciesId,
 }) {
   const [filterText, setFilterText] = useState('');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'table'
@@ -230,6 +232,8 @@ export default function SpeciesList({
               isSelected={selectedIds.has(s.id)}
               onToggleSelect={onToggleSelect}
               overlaySettings={overlaySettings}
+              onChangePhoto={onChangePhoto}
+              loadingPhotoSpeciesId={loadingPhotoSpeciesId}
             />
           ))}
         </div>

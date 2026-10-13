@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Compass, Sparkles, MapPin, Feather, Palette, Grid } from 'lucide-react';
+import { Compass, Sparkles, MapPin, Feather, Palette, Grid, RefreshCw, Loader2 } from 'lucide-react';
 
 export default function PosterView({
   species,
@@ -7,6 +7,8 @@ export default function PosterView({
   taxonName,
   overlaySettings,
   id = 'poster-export-container',
+  onChangePhoto,
+  loadingPhotoSpeciesId,
 }) {
   const [posterTheme, setPosterTheme] = useState('botanical'); // 'botanical' | 'midnight' | 'forest'
   const [posterLimit, setPosterLimit] = useState(species.length > 48 ? '48' : 'all');
@@ -16,6 +18,7 @@ export default function PosterView({
     showScientificNameTop,
     nameOrder,
     badgeStyle,
+    topPosition,
     showAuthorCopyright,
     showLicenseCode,
     bottomStyle,
@@ -211,9 +214,42 @@ export default function PosterView({
                     #{String(index + 1).padStart(2, '0')}
                   </div>
 
+                  {/* Photo Switcher Button (interactive in preview, hidden in print/PDF) */}
+                  {onChangePhoto && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onChangePhoto(s.id, 1);
+                      }}
+                      disabled={loadingPhotoSpeciesId === s.id}
+                      className="no-print absolute bottom-1 right-1 z-20 bg-black/80 hover:bg-black/95 active:scale-95 text-white text-[7px] font-bold px-1 py-0.5 rounded backdrop-blur-md flex items-center gap-0.5 shadow-md border border-white/20 transition-all cursor-pointer"
+                      title="Switch photo for better visibility"
+                    >
+                      {loadingPhotoSpeciesId === s.id ? (
+                        <Loader2 className="w-2 h-2 animate-spin text-emerald-400" />
+                      ) : (
+                        <RefreshCw className="w-2 h-2 text-emerald-400" />
+                      )}
+                      <span>
+                        {s.photosList && s.photosList.length > 1
+                          ? `${(s.photoIndex ?? 0) + 1}/${s.photosList.length}`
+                          : 'Photo'}
+                      </span>
+                    </button>
+                  )}
+
                   {/* TOP OVERLAY: Common / Scientific Name */}
                   {(showCommonNameTop || showScientificNameTop) && (
-                    <div className="absolute top-1 left-1 right-6 flex justify-start pointer-events-none">
+                    <div
+                      className={`absolute top-1 left-1 right-7 flex pointer-events-none ${
+                        topPosition === 'top-center'
+                          ? 'justify-center'
+                          : topPosition === 'top-right'
+                          ? 'justify-end'
+                          : 'justify-start'
+                      }`}
+                    >
                       <div
                         className={`px-1 py-0.5 rounded max-w-full truncate ${
                           badgeStyle === 'frosted_dark'

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Compass, BookOpen, MapPin, Feather } from 'lucide-react';
+import { Compass, BookOpen, MapPin, Feather, RefreshCw, Loader2 } from 'lucide-react';
 
 export default function PamphletView({
   species,
@@ -7,6 +7,8 @@ export default function PamphletView({
   taxonName,
   overlaySettings,
   id = 'pamphlet-export-container',
+  onChangePhoto,
+  loadingPhotoSpeciesId,
 }) {
   const [spreadMode, setSpreadMode] = useState('both'); // Default to 'both' so both pages are available for full brochure export
 
@@ -15,6 +17,7 @@ export default function PamphletView({
     showScientificNameTop,
     nameOrder,
     badgeStyle,
+    topPosition,
     showAuthorCopyright,
     showLicenseCode,
     bottomStyle,
@@ -56,9 +59,38 @@ export default function PamphletView({
             />
           )}
 
+          {/* PHOTO SWITCHER (Interactive in preview, excluded from print/PDF) */}
+          {onChangePhoto && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChangePhoto(s.id, 1);
+              }}
+              disabled={loadingPhotoSpeciesId === s.id}
+              className="no-print absolute top-1 right-1 z-20 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[8px] font-bold px-1.5 py-0.5 rounded backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer"
+              title="Click to switch photo if the bird's face is obscured"
+            >
+              {loadingPhotoSpeciesId === s.id ? (
+                <Loader2 className="w-2.5 h-2.5 animate-spin text-emerald-400" />
+              ) : (
+                <RefreshCw className="w-2.5 h-2.5 text-emerald-400" />
+              )}
+              <span>{s.photosList && s.photosList.length > 1 ? `${(s.photoIndex ?? 0) + 1}/${s.photosList.length}` : 'Photo'}</span>
+            </button>
+          )}
+
           {/* TOP OVERLAY: Common / Scientific Name */}
           {(showCommonNameTop || showScientificNameTop) && (
-            <div className="absolute top-1.5 left-1.5 right-1.5 flex justify-start pointer-events-none">
+            <div
+              className={`absolute top-1.5 left-1.5 right-12 flex pointer-events-none ${
+                topPosition === 'top-center'
+                  ? 'justify-center'
+                  : topPosition === 'top-right'
+                  ? 'justify-end'
+                  : 'justify-start'
+              }`}
+            >
               <div
                 className={`px-1.5 py-0.5 rounded max-w-full truncate ${
                   badgeStyle === 'frosted_dark'
@@ -342,6 +374,30 @@ export default function PamphletView({
                       }}
                       className="w-full h-full object-cover"
                     />
+                    {/* Hero photo switcher */}
+                    {onChangePhoto && heroSpecies.id && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onChangePhoto(heroSpecies.id, 1);
+                        }}
+                        disabled={loadingPhotoSpeciesId === heroSpecies.id}
+                        className="no-print absolute top-1.5 right-1.5 z-20 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[9px] font-bold px-2 py-0.5 rounded backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer"
+                        title="Click to switch cover photo of this species"
+                      >
+                        {loadingPhotoSpeciesId === heroSpecies.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin text-emerald-400" />
+                        ) : (
+                          <RefreshCw className="w-3 h-3 text-emerald-400" />
+                        )}
+                        <span>
+                          {heroSpecies.photosList && heroSpecies.photosList.length > 1
+                            ? `${(heroSpecies.photoIndex ?? 0) + 1}/${heroSpecies.photosList.length}`
+                            : 'Cover Photo'}
+                        </span>
+                      </button>
+                    )}
                     <div className="absolute bottom-1 right-1 bg-black/70 text-[8px] px-1.5 py-0.5 rounded text-white">
                       {heroSpecies.commonName}
                     </div>

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { ExternalLink, Check, Plus, Image as ImageIcon } from 'lucide-react';
+import { ExternalLink, Check, Plus, Image as ImageIcon, RefreshCw, Loader2 } from 'lucide-react';
 
 export default function SpeciesCard({
   species,
   isSelected,
   onToggleSelect,
   overlaySettings,
+  onChangePhoto,
+  loadingPhotoSpeciesId,
 }) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -37,12 +39,36 @@ export default function SpeciesCard({
           : 'border-slate-200 hover:border-slate-300 shadow-xs opacity-75 hover:opacity-100'
       }`}
     >
-      {/* Top action bar: Selection checkbox */}
-      <div className="absolute top-3 right-3 z-20">
+      {/* Top action bar: Selection checkbox & Photo switcher */}
+      <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5">
+        {onChangePhoto && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onChangePhoto(species.id, 1);
+            }}
+            disabled={loadingPhotoSpeciesId === species.id}
+            className="h-7 px-2 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[10px] font-bold rounded-lg backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer group/btn"
+            title="Switch photo: Click to view alternative photos of this species with better visibility"
+          >
+            {loadingPhotoSpeciesId === species.id ? (
+              <Loader2 className="w-3 h-3 animate-spin text-emerald-400" />
+            ) : (
+              <RefreshCw className="w-3 h-3 text-emerald-400 transition-transform duration-300 group-hover/btn:rotate-180" />
+            )}
+            <span>
+              {species.photosList && species.photosList.length > 1
+                ? `${(species.photoIndex ?? 0) + 1}/${species.photosList.length}`
+                : 'Photo'}
+            </span>
+          </button>
+        )}
+
         <button
           type="button"
           onClick={() => onToggleSelect(species.id)}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all shadow-md ${
+          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all shadow-md cursor-pointer ${
             isSelected
               ? 'bg-emerald-600 text-white hover:bg-emerald-700'
               : 'bg-white/90 text-slate-400 hover:text-slate-700 border border-slate-200'
@@ -85,8 +111,12 @@ export default function SpeciesCard({
         {/* TOP OVERLAY: Scientific Name and/or Common Name */}
         {(showCommonNameTop || showScientificNameTop) && (
           <div
-            className={`absolute top-2.5 left-2.5 right-12 z-10 flex pointer-events-none ${
-              topPosition === 'top-center' ? 'justify-center' : 'justify-start'
+            className={`absolute top-2.5 left-2.5 right-24 z-10 flex pointer-events-none ${
+              topPosition === 'top-center'
+                ? 'justify-center'
+                : topPosition === 'top-right'
+                ? 'justify-end'
+                : 'justify-start'
             }`}
           >
             <div
