@@ -218,12 +218,13 @@ export default function PosterView({
                   {onChangePhoto && (
                     <button
                       type="button"
+                      data-export-ignore="true"
                       onClick={(e) => {
                         e.stopPropagation();
                         onChangePhoto(s.id, 1);
                       }}
                       disabled={loadingPhotoSpeciesId === s.id}
-                      className="no-print absolute bottom-1 right-1 z-20 bg-black/80 hover:bg-black/95 active:scale-95 text-white text-[7px] font-bold px-1 py-0.5 rounded backdrop-blur-md flex items-center gap-0.5 shadow-md border border-white/20 transition-all cursor-pointer"
+                      className="no-print export-ignore absolute bottom-1 right-1 z-20 bg-black/80 hover:bg-black/95 active:scale-95 text-white text-[7px] font-bold px-1 py-0.5 rounded backdrop-blur-md flex items-center gap-0.5 shadow-md border border-white/20 transition-all cursor-pointer"
                       title="Switch photo for better visibility"
                     >
                       {loadingPhotoSpeciesId === s.id ? (
@@ -242,7 +243,7 @@ export default function PosterView({
                   {/* TOP OVERLAY: Common / Scientific Name */}
                   {(showCommonNameTop || showScientificNameTop) && (
                     <div
-                      className={`absolute top-1 left-1 right-7 flex pointer-events-none ${
+                      className={`absolute top-1 left-1 right-1 flex pointer-events-none ${
                         topPosition === 'top-center'
                           ? 'justify-center'
                           : topPosition === 'top-right'

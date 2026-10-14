@@ -126,6 +126,25 @@ export async function elementToCanvas(element, scale = 1.5, overrideStyles = {})
     cacheBust: false,
     skipAutoScale: true,
     style: overrideStyles,
+    filter: (node) => {
+      // Always include the root container itself
+      if (node === element) return true;
+      if (node.nodeType === 1) { // Element node
+        const tag = (node.tagName || '').toLowerCase();
+        // Interactive UI buttons must NEVER appear in the PDF export
+        if (tag === 'button') {
+          return false;
+        }
+        if (
+          node.classList?.contains('no-print') ||
+          node.classList?.contains('export-ignore') ||
+          node.getAttribute?.('data-export-ignore') === 'true'
+        ) {
+          return false;
+        }
+      }
+      return true;
+    },
   });
 
   // Load SVG into an Image element safely

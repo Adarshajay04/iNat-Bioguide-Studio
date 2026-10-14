@@ -63,12 +63,13 @@ export default function PamphletView({
           {onChangePhoto && (
             <button
               type="button"
+              data-export-ignore="true"
               onClick={(e) => {
                 e.stopPropagation();
                 onChangePhoto(s.id, 1);
               }}
               disabled={loadingPhotoSpeciesId === s.id}
-              className="no-print absolute top-1 right-1 z-20 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[8px] font-bold px-1.5 py-0.5 rounded backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer"
+              className="no-print export-ignore absolute top-1 right-1 z-20 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[8px] font-bold px-1.5 py-0.5 rounded backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer"
               title="Click to switch photo if the bird's face is obscured"
             >
               {loadingPhotoSpeciesId === s.id ? (
@@ -83,7 +84,7 @@ export default function PamphletView({
           {/* TOP OVERLAY: Common / Scientific Name */}
           {(showCommonNameTop || showScientificNameTop) && (
             <div
-              className={`absolute top-1.5 left-1.5 right-12 flex pointer-events-none ${
+              className={`absolute top-1.5 left-1.5 right-1.5 flex pointer-events-none ${
                 topPosition === 'top-center'
                   ? 'justify-center'
                   : topPosition === 'top-right'
@@ -378,12 +379,13 @@ export default function PamphletView({
                     {onChangePhoto && heroSpecies.id && (
                       <button
                         type="button"
+                        data-export-ignore="true"
                         onClick={(e) => {
                           e.stopPropagation();
                           onChangePhoto(heroSpecies.id, 1);
                         }}
                         disabled={loadingPhotoSpeciesId === heroSpecies.id}
-                        className="no-print absolute top-1.5 right-1.5 z-20 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[9px] font-bold px-2 py-0.5 rounded backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer"
+                        className="no-print export-ignore absolute top-1.5 right-1.5 z-20 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[9px] font-bold px-2 py-0.5 rounded backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer"
                         title="Click to switch cover photo of this species"
                       >
                         {loadingPhotoSpeciesId === heroSpecies.id ? (

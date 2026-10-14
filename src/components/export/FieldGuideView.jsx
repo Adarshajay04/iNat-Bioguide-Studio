@@ -67,12 +67,13 @@ export default function FieldGuideView({
           {onChangePhoto && (
             <button
               type="button"
+              data-export-ignore="true"
               onClick={(e) => {
                 e.stopPropagation();
                 onChangePhoto(s.id, 1);
               }}
               disabled={loadingPhotoSpeciesId === s.id}
-              className="no-print absolute top-2 right-2 z-20 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[10px] font-bold px-2 py-1 rounded-lg backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer group/btn"
+              className="no-print export-ignore absolute top-2 right-2 z-20 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[10px] font-bold px-2 py-1 rounded-lg backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer group/btn"
               title="Click to switch photo if the bird's face or body is hidden behind the name badge"
             >
               {loadingPhotoSpeciesId === s.id ? (
@@ -91,7 +92,7 @@ export default function FieldGuideView({
           {/* TOP OVERLAY: Common / Scientific Name */}
           {(showCommonNameTop || showScientificNameTop) && (
             <div
-              className={`absolute top-2 left-2 right-16 flex pointer-events-none ${
+              className={`absolute top-2 left-2 right-2 flex pointer-events-none ${
                 topPosition === 'top-center'
                   ? 'justify-center'
                   : topPosition === 'top-right'

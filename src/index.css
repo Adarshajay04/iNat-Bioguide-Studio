@@ -31,7 +31,10 @@
     break-inside: avoid;
   }
 
-  .no-print {
+  .no-print,
+  .export-ignore,
+  [data-export-ignore="true"],
+  .pdf-page button {
     display: none !important;
   }
 
