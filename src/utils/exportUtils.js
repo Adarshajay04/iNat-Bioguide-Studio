@@ -216,15 +216,7 @@ export async function downloadElementAsPdf(
     pageNodes = [container];
   }
 
-  const pdf = new jsPDF({
-    orientation: orientation,
-    unit: 'mm',
-    format: 'a4',
-    compress: true,
-  });
-
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
+  let pdf = null;
   const totalPages = pageNodes.length;
 
   for (let i = 0; i < totalPages; i++) {
@@ -233,8 +225,21 @@ export async function downloadElementAsPdf(
       onProgress({ status: 'rendering-page', page: i + 1, total: totalPages });
     }
 
-    if (i > 0) {
-      pdf.addPage([pageWidth, pageHeight], orientation);
+    const customW = parseFloat(pageEl.getAttribute('data-pdf-width-mm'));
+    const customH = parseFloat(pageEl.getAttribute('data-pdf-height-mm'));
+    const curW = customW || (orientation === 'landscape' ? 297 : 210);
+    const curH = customH || (orientation === 'landscape' ? 210 : 297);
+    const curOrient = curW >= curH ? 'landscape' : 'portrait';
+
+    if (i === 0) {
+      pdf = new jsPDF({
+        orientation: curOrient,
+        unit: 'mm',
+        format: [curW, curH],
+        compress: true,
+      });
+    } else {
+      pdf.addPage([curW, curH], curOrient);
     }
 
     // Capture individual page at high DPI without outer shadow, rounded corners or border
@@ -247,26 +252,26 @@ export async function downloadElementAsPdf(
 
     const imgData = canvas.toDataURL('image/jpeg', 0.96);
     const canvasAspect = canvas.width / canvas.height;
-    const pageAspect = pageWidth / pageHeight;
+    const pageAspect = curW / curH;
 
     // If aspect ratios match closely, fill page completely
     if (Math.abs(canvasAspect - pageAspect) < 0.15) {
-      pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight, undefined, 'SLOW');
+      pdf.addImage(imgData, 'JPEG', 0, 0, curW, curH, undefined, 'SLOW');
     } else {
       // Proportional fit centered on page (e.g. posters or custom aspects)
-      let drawW = pageWidth;
-      let drawH = pageHeight;
+      let drawW = curW;
+      let drawH = curH;
       let offX = 0;
       let offY = 0;
 
       if (canvasAspect > pageAspect) {
-        drawW = pageWidth;
-        drawH = pageWidth / canvasAspect;
-        offY = Math.max(0, (pageHeight - drawH) / 2);
+        drawW = curW;
+        drawH = curW / canvasAspect;
+        offY = Math.max(0, (curH - drawH) / 2);
       } else {
-        drawH = pageHeight;
-        drawW = pageHeight * canvasAspect;
-        offX = Math.max(0, (pageWidth - drawW) / 2);
+        drawH = curH;
+        drawW = curH * canvasAspect;
+        offX = Math.max(0, (curW - drawW) / 2);
       }
 
       pdf.addImage(imgData, 'JPEG', offX, offY, drawW, drawH, undefined, 'SLOW');

@@ -96,6 +96,17 @@ export default function App() {
     });
   };
 
+  // 1-Click trigger to fetch top N common species (for 12-panel Pocket Guide)
+  const handleFetchCommonSpecies = (count = 150) => {
+    setLimit(count);
+    handleSearch({
+      placeId: selectedPlace?.id,
+      taxonId: selectedTaxon?.id,
+      licenseFilter,
+      perPage: count,
+    });
+  };
+
   const handleCancelFetch = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -283,6 +294,7 @@ export default function App() {
           setShowExportModal(false);
           setShowSettings(true);
         }}
+        onFetchCommonSpecies={handleFetchCommonSpecies}
       />
 
       {/* Application Footer */}
@@ -292,7 +304,7 @@ export default function App() {
             Built with <span className="text-emerald-600 font-bold">iNaturalist Open API</span> • Open Source Biodiversity Data
           </div>
           <div>
-            Supports Scrollable PDF Field Guides • Tri-fold Pamphlets • High-Res Wall Posters
+            Supports Scrollable PDF Field Guides • Tri-fold Pamphlets • Folding Pocket Guides (12-Panel) • Wall Posters
           </div>
         </div>
       </footer>

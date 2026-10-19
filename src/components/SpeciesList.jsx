@@ -153,6 +153,17 @@ export default function SpeciesList({
               </button>
             )}
 
+            {species.length >= 130 && onSelectTopN && (
+              <button
+                type="button"
+                onClick={() => onSelectTopN(150)}
+                className="px-2 py-1 text-xs font-semibold rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors"
+                title="Select top 150 common species for 12-panel pocket guide"
+              >
+                Top 150 (Pocket Guide)
+              </button>
+            )}
+
             <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 ml-1">
               {selectedCount.toLocaleString()} Selected
             </span>

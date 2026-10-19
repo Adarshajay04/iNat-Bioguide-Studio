@@ -10,10 +10,12 @@ import {
   Sliders,
   Loader2,
   Check,
+  Layers,
 } from 'lucide-react';
 import FieldGuideView from './FieldGuideView';
 import PamphletView from './PamphletView';
 import PosterView from './PosterView';
+import PocketGuideView from './PocketGuideView';
 import {
   triggerBrowserPrint,
   downloadElementAsPdf,
@@ -30,8 +32,9 @@ export default function ExportModal({
   onChangePhoto,
   loadingPhotoSpeciesId,
   onOpenSettings,
+  onFetchCommonSpecies,
 }) {
-  const [activeTab, setActiveTab] = useState('field-guide'); // 'field-guide' | 'pamphlet' | 'poster'
+  const [activeTab, setActiveTab] = useState('field-guide'); // 'field-guide' | 'pamphlet' | 'poster' | 'pocket-guide'
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
   const [exportProgress, setExportProgress] = useState('');
@@ -47,6 +50,8 @@ export default function ExportModal({
         return 'pamphlet-export-container';
       case 'poster':
         return 'poster-export-container';
+      case 'pocket-guide':
+        return 'pocket-guide-export-container';
       default:
         return 'field-guide-export-container';
     }
@@ -65,7 +70,7 @@ export default function ExportModal({
         .replace(/[^a-zA-Z0-9_-]/g, '_')
         .toLowerCase();
       const filename = `${sanitizedName}_${activeTab}.pdf`;
-      const orientation = activeTab === 'pamphlet' ? 'landscape' : 'portrait';
+      const orientation = (activeTab === 'pamphlet' || activeTab === 'pocket-guide') ? 'landscape' : 'portrait';
       const scale = pdfQuality === 'ultra' ? 2.8 : pdfQuality === 'high' ? 2.0 : 1.5;
 
       await downloadElementAsPdf(
@@ -157,6 +162,19 @@ export default function ExportModal({
           >
             <Palette className="w-4 h-4" />
             <span>Wall Poster</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('pocket-guide')}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              activeTab === 'pocket-guide'
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Pocket Guide (12-Panel)</span>
           </button>
         </div>
 
@@ -285,6 +303,19 @@ export default function ExportModal({
             id="poster-export-container"
             onChangePhoto={onChangePhoto}
             loadingPhotoSpeciesId={loadingPhotoSpeciesId}
+          />
+        )}
+
+        {activeTab === 'pocket-guide' && (
+          <PocketGuideView
+            species={species}
+            placeName={placeName}
+            taxonName={taxonName}
+            overlaySettings={overlaySettings}
+            id="pocket-guide-export-container"
+            onChangePhoto={onChangePhoto}
+            loadingPhotoSpeciesId={loadingPhotoSpeciesId}
+            onFetchCommonSpecies={onFetchCommonSpecies}
           />
         )}
       </div>

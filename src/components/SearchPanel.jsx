@@ -390,6 +390,7 @@ export default function SearchPanel({
                 <option value={24}>24 species (Standard)</option>
                 <option value={48}>48 species (Extended)</option>
                 <option value={100}>100 species (Large Bioblitz)</option>
+                <option value={150}>150 species (Pocket Guide 12-Panel)</option>
                 <option value={250}>250 species (Exhaustive)</option>
                 <option value={500}>500 species (Full Batch)</option>
                 <option value="all">✨ All Species (Complete Regional Checklist)</option>
