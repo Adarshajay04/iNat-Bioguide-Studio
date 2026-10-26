@@ -232,10 +232,10 @@ export default function PocketGuideView({
     return (
       <div
         key={s.id}
-        className={`${themeStyles.cardBg} border ${themeStyles.border} rounded-md overflow-hidden flex flex-col justify-between shadow-2xs relative group`}
+        className={`${themeStyles.cardBg} border ${themeStyles.border} rounded-sm overflow-hidden flex flex-col justify-between shadow-2xs relative group min-h-0 h-full`}
       >
-        {/* Photo Container */}
-        <div className="relative aspect-4/3 bg-slate-200 overflow-hidden">
+        {/* Photo Container - Uses flex-1 min-h-0 so photo expands to fill available cell height without overflowing */}
+        <div className="flex-1 min-h-0 relative bg-slate-100 overflow-hidden">
           {photoUrl ? (
             <img
               src={photoUrl}
@@ -253,14 +253,9 @@ export default function PocketGuideView({
             <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-400">🌿</div>
           )}
 
-          {/* Rank Badge */}
-          <div className="absolute top-0.5 left-0.5 bg-black/75 backdrop-blur-xs text-[7px] font-mono font-bold text-white px-1 py-0.2 rounded-xs">
-            #{rank}
-          </div>
-
           {/* Sighting tick-box */}
           <div
-            className="absolute top-0.5 right-0.5 w-3 h-3 rounded-xs bg-white/90 border border-black/30 flex items-center justify-center shadow-xs"
+            className="absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-2xs bg-white/90 border border-black/30 flex items-center justify-center shadow-xs"
             title="Tick when spotted in the field"
           />
 
@@ -274,7 +269,7 @@ export default function PocketGuideView({
                 onChangePhoto(s.id, 1);
               }}
               disabled={loadingPhotoSpeciesId === s.id}
-              className="no-print export-ignore absolute bottom-0.5 right-0.5 z-20 bg-black/80 hover:bg-black/95 active:scale-95 text-white text-[6.5px] font-bold px-1 py-0.2 rounded backdrop-blur-md flex items-center gap-0.5 shadow-md border border-white/20 transition-all cursor-pointer opacity-90 hover:opacity-100"
+              className="no-print export-ignore absolute bottom-0.5 right-0.5 z-20 bg-black/80 hover:bg-black/95 active:scale-95 text-white text-[6px] font-bold px-1 py-0.2 rounded backdrop-blur-md flex items-center gap-0.5 shadow-md border border-white/20 transition-all cursor-pointer opacity-90 hover:opacity-100"
               title="Switch photo if bird face/features are obscured"
             >
               {loadingPhotoSpeciesId === s.id ? (
@@ -289,49 +284,41 @@ export default function PocketGuideView({
           {/* Mini Copyright overlay if requested */}
           {showAuthorCopyright && (
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-1 py-0.5 pointer-events-none">
-              <div className="text-[6px] text-slate-200 truncate leading-none">
+              <div className="text-[5.5px] text-slate-200 truncate leading-none">
                 © {photographer}{licenseTag}
               </div>
             </div>
           )}
         </div>
 
-        {/* Labels & Information */}
-        <div className="p-1 leading-tight flex flex-col justify-between">
-          <div>
-            {nameOrder === 'common_first' ? (
-              <>
-                {showCommonNameTop && (
-                  <div className={`font-bold text-[8.5px] leading-tight truncate ${theme === 'midnight' ? 'text-white' : 'text-slate-900'}`}>
-                    {s.commonName}
-                  </div>
-                )}
-                {showScientificNameTop && (
-                  <div className="text-[7px] italic text-slate-500 leading-tight truncate">
-                    {s.scientificName}
-                  </div>
-                )}
-              </>
-            ) : (
-              <>
-                {showScientificNameTop && (
-                  <div className={`font-bold italic text-[8.5px] leading-tight truncate ${theme === 'midnight' ? 'text-white' : 'text-slate-900'}`}>
-                    {s.scientificName}
-                  </div>
-                )}
-                {showCommonNameTop && (
-                  <div className="text-[7px] text-slate-500 leading-tight truncate">
-                    {s.commonName}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-          {s.count && (
-            <div className="mt-0.5 flex items-center justify-between text-[6.5px] text-slate-400">
-              <span>{s.iconicTaxon || 'Species'}</span>
-              <span className="font-mono">{s.count.toLocaleString()} obs</span>
-            </div>
+        {/* Labels & Information (compact names, observation counts and family removed) */}
+        <div className="px-1 py-0.5 shrink-0 leading-tight">
+          {nameOrder === 'common_first' ? (
+            <>
+              {showCommonNameTop && (
+                <div className={`font-bold text-[8px] leading-tight truncate ${theme === 'midnight' ? 'text-white' : 'text-slate-900'}`}>
+                  {s.commonName}
+                </div>
+              )}
+              {showScientificNameTop && (
+                <div className="text-[6.5px] italic text-slate-500 leading-tight truncate">
+                  {s.scientificName}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {showScientificNameTop && (
+                <div className={`font-bold italic text-[8px] leading-tight truncate ${theme === 'midnight' ? 'text-white' : 'text-slate-900'}`}>
+                  {s.scientificName}
+                </div>
+              )}
+              {showCommonNameTop && (
+                <div className="text-[6.5px] text-slate-500 leading-tight truncate">
+                  {s.commonName}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -465,53 +452,53 @@ export default function PocketGuideView({
   const renderBackCover = () => (
     <div
       key="panel-12-back"
-      className={`h-full flex flex-col justify-between ${themeStyles.bg} p-3.5 rounded-none relative select-none`}
+      className={`h-full flex flex-col justify-between ${themeStyles.bg} p-2 sm:p-2.5 rounded-none relative select-none min-h-0 overflow-hidden`}
     >
-      <div>
+      <div className="space-y-2">
         {/* Header */}
-        <div className={`p-2 rounded-lg ${themeStyles.headerBg} mb-3 flex items-center justify-between`}>
+        <div className={`p-1.5 rounded-md ${themeStyles.headerBg} flex items-center justify-between`}>
           <div>
-            <div className="text-[7.5px] font-black uppercase tracking-wider opacity-85">
+            <div className="text-[7px] font-black uppercase tracking-wider opacity-85">
               Field Checklist & Notes
             </div>
-            <div className="text-[11px] font-bold">
+            <div className="text-[9.5px] font-bold">
               Citizen Science Record
             </div>
           </div>
-          <CheckSquare className="w-4 h-4 text-emerald-300" />
+          <CheckSquare className="w-3.5 h-3.5 text-emerald-300" />
         </div>
 
         {/* Observation Log Table */}
-        <div className="bg-white border border-slate-200 rounded-lg p-2 text-[8px] text-slate-700 space-y-1.5 shadow-2xs mb-3">
-          <div className="font-bold text-slate-900 uppercase text-[7.5px] border-b border-slate-100 pb-1">
+        <div className="bg-white border border-slate-200 rounded-md p-1.5 text-[7px] text-slate-700 space-y-1 shadow-2xs">
+          <div className="font-bold text-slate-900 uppercase text-[6.5px] border-b border-slate-100 pb-0.5">
             Observation Trip Details
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-1.5">
             <div>
-              <span className="text-slate-400">Date:</span> _________________
+              <span className="text-slate-400">Date:</span> ____________
             </div>
             <div>
-              <span className="text-slate-400">Weather:</span> ______________
+              <span className="text-slate-400">Weather:</span> _________
             </div>
           </div>
           <div>
-            <span className="text-slate-400">Location:</span> ____________________________________
+            <span className="text-slate-400">Location:</span> _____________________________
           </div>
           <div>
-            <span className="text-slate-400">Observers:</span> ___________________________________
+            <span className="text-slate-400">Observers:</span> ____________________________
           </div>
         </div>
 
         {/* Citizen Science Contribution Callout */}
-        <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 text-[8px] text-emerald-950 space-y-1 shadow-2xs">
-          <div className="font-bold flex items-center gap-1 text-emerald-800">
-            <Sparkles className="w-3 h-3 text-emerald-600" />
+        <div className="bg-emerald-50 border border-emerald-200 rounded-md p-1.5 text-[7px] text-emerald-950 space-y-0.5 shadow-2xs">
+          <div className="font-bold flex items-center gap-1 text-emerald-800 text-[7.5px]">
+            <Sparkles className="w-2.5 h-2.5 text-emerald-600" />
             <span>Contribute to Biodiversity Science</span>
           </div>
-          <p className="leading-relaxed text-[7.5px] text-emerald-900">
+          <p className="leading-tight text-[6.5px] text-emerald-900">
             Every photo uploaded to <strong>iNaturalist</strong> helps scientists track regional migrations, breeding phenology, and habitat health.
           </p>
-          <ol className="list-decimal list-inside space-y-0.5 text-[7px] text-emerald-800 pt-1">
+          <ol className="list-decimal list-inside space-y-0.5 text-[6.5px] text-emerald-800 pt-0.5">
             <li>Download the free iNaturalist app</li>
             <li>Photograph any organism encountered</li>
             <li>Submit observation to the global community</li>
@@ -520,15 +507,15 @@ export default function PocketGuideView({
       </div>
 
       {/* Footer Info & Fold Guidelines */}
-      <div className="border-t border-slate-200 pt-2 text-[7px] text-slate-400 space-y-1">
+      <div className="border-t border-slate-200 pt-1 text-[6.5px] text-slate-400 space-y-0.5 shrink-0">
         <div className="flex items-center justify-between font-medium text-slate-600">
           <span>Data: Research-grade records</span>
           <span>© Creative Commons</span>
         </div>
-        <p className="leading-tight text-[6.5px]">
+        <p className="leading-tight text-[6px]">
           Folds down to 3.5" × 8.5" (89 × 216 mm) • Pocket Naturalist folding field guide standard.
         </p>
-        <div className="text-right font-bold text-slate-500 pt-0.5">
+        <div className="text-right font-bold text-slate-500">
           Side 2 • Panel 12
         </div>
       </div>
@@ -537,36 +524,33 @@ export default function PocketGuideView({
 
   // Render standard Species Panel
   const renderSpeciesPanel = (panel) => {
+    const rowsCount = cardLayout === 'grid'
+      ? Math.ceil(panel.species.length / 2)
+      : panel.species.length;
+
     return (
       <div
         key={`panel-${panel.panelNumber}`}
-        className={`h-full flex flex-col justify-between ${themeStyles.bg} p-2 rounded-none relative select-none`}
+        className={`h-full flex flex-col justify-between ${themeStyles.bg} p-1 sm:p-1.5 rounded-none relative select-none min-h-0 overflow-hidden`}
       >
-        {/* Panel Header */}
-        <div className={`px-2 py-1 rounded mb-1.5 flex items-center justify-between text-[8px] font-bold ${themeStyles.headerBg}`}>
-          <span className="uppercase tracking-wider">
-            Panel {panel.panelNumber}
-          </span>
-          <span className="opacity-90 font-mono text-[7.5px]">
-            {panel.title}
-          </span>
-        </div>
-
-        {/* Species Container */}
+        {/* Species Container - Starts at the very top (panel header removed to maximize vertical space) */}
         <div
-          className={`flex-1 min-h-0 overflow-hidden ${
+          className={`flex-1 min-h-0 ${
             cardLayout === 'grid'
-              ? 'grid grid-cols-2 gap-1.5 content-start'
-              : 'space-y-1'
+              ? 'grid grid-cols-2 gap-1'
+              : 'grid grid-cols-1 gap-1'
           }`}
+          style={{
+            gridTemplateRows: `repeat(${rowsCount}, minmax(0, 1fr))`,
+          }}
         >
           {panel.species.map((s, idx) => renderSpeciesCard(s, panel.startRank + idx))}
         </div>
 
-        {/* Panel Footer Indicator */}
-        <div className="mt-1 pt-1 border-t border-slate-200/80 flex items-center justify-between text-[6.5px] text-slate-400">
-          <span>{taxonName || 'Species'} • {placeName || 'Regional'}</span>
-          <span className="font-mono font-bold">
+        {/* Minimal Hairline Footer */}
+        <div className="mt-0.5 pt-0.5 border-t border-slate-200/60 flex items-center justify-between text-[6px] text-slate-400 shrink-0 leading-none">
+          <span className="truncate">{taxonName || 'Species'} • {placeName || 'Guide'}</span>
+          <span className="font-mono font-bold shrink-0 ml-1">
             Side {panel.panelNumber <= 6 ? '1' : '2'} • {panel.panelNumber}/12
           </span>
         </div>
@@ -750,7 +734,7 @@ export default function PocketGuideView({
         {/* MODE 1: FULL SPREADS (2 × 6-Panel Sheets: 21" × 8.5")     */}
         {/* ========================================================= */}
         {viewFormat === 'spread' && (
-          <>
+          <div className="space-y-6">
             {/* SPREAD 1: SIDE A (Panels 1 to 6) */}
             <div className="space-y-1.5 no-print">
               <div className="flex items-center justify-between text-xs font-bold text-slate-700">
@@ -759,52 +743,54 @@ export default function PocketGuideView({
               </div>
             </div>
 
-            <div
-              className={`pdf-page ${themeStyles.bg} border ${themeStyles.border} rounded-xl shadow-md p-1.5 page-break-after overflow-hidden`}
-              data-pdf-width-mm="533.4"
-              data-pdf-height-mm="215.9"
-              style={{
-                width: '100%',
-                aspectRatio: '533.4 / 215.9',
-                minHeight: '480px',
-              }}
-            >
-              <div className="grid grid-cols-6 h-full relative divide-x divide-dashed divide-slate-300">
-                {panelsData.slice(0, 6).map((panel) => (
-                  <div key={`sideA-${panel.panelNumber}`} className="h-full px-1">
-                    {renderPanel(panel)}
-                  </div>
-                ))}
+            <div className="overflow-x-auto pb-2">
+              <div
+                className={`pdf-page ${themeStyles.bg} border ${themeStyles.border} rounded-xl shadow-md p-1.5 page-break-after overflow-hidden min-w-[1100px] xl:min-w-[1280px] print:min-w-0`}
+                data-pdf-width-mm="533.4"
+                data-pdf-height-mm="215.9"
+                style={{
+                  width: '100%',
+                  aspectRatio: '533.4 / 215.9',
+                }}
+              >
+                <div className="grid grid-cols-6 h-full min-h-0 relative divide-x divide-dashed divide-slate-300">
+                  {panelsData.slice(0, 6).map((panel) => (
+                    <div key={`sideA-${panel.panelNumber}`} className="h-full min-h-0 min-w-0 px-1 overflow-hidden">
+                      {renderPanel(panel)}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* SPREAD 2: SIDE B (Panels 7 to 12) */}
-            <div className="space-y-1.5 no-print pt-4">
+            <div className="space-y-1.5 no-print pt-2">
               <div className="flex items-center justify-between text-xs font-bold text-slate-700">
                 <span>🌿 SPREAD 2 • SIDE B (PANELS 7 TO 12) — 21" × 8.5"</span>
                 <span className="text-[11px] text-slate-400 font-normal">Reverse side of folding sheet</span>
               </div>
             </div>
 
-            <div
-              className={`pdf-page ${themeStyles.bg} border ${themeStyles.border} rounded-xl shadow-md p-1.5 page-break-after overflow-hidden`}
-              data-pdf-width-mm="533.4"
-              data-pdf-height-mm="215.9"
-              style={{
-                width: '100%',
-                aspectRatio: '533.4 / 215.9',
-                minHeight: '480px',
-              }}
-            >
-              <div className="grid grid-cols-6 h-full relative divide-x divide-dashed divide-slate-300">
-                {panelsData.slice(6, 12).map((panel) => (
-                  <div key={`sideB-${panel.panelNumber}`} className="h-full px-1">
-                    {renderPanel(panel)}
-                  </div>
-                ))}
+            <div className="overflow-x-auto pb-2">
+              <div
+                className={`pdf-page ${themeStyles.bg} border ${themeStyles.border} rounded-xl shadow-md p-1.5 page-break-after overflow-hidden min-w-[1100px] xl:min-w-[1280px] print:min-w-0`}
+                data-pdf-width-mm="533.4"
+                data-pdf-height-mm="215.9"
+                style={{
+                  width: '100%',
+                  aspectRatio: '533.4 / 215.9',
+                }}
+              >
+                <div className="grid grid-cols-6 h-full min-h-0 relative divide-x divide-dashed divide-slate-300">
+                  {panelsData.slice(6, 12).map((panel) => (
+                    <div key={`sideB-${panel.panelNumber}`} className="h-full min-h-0 min-w-0 px-1 overflow-hidden">
+                      {renderPanel(panel)}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </>
+          </div>
         )}
 
         {/* ========================================================= */}
@@ -825,18 +811,17 @@ export default function PocketGuideView({
                 </div>
 
                 <div
-                  className={`pdf-page ${themeStyles.bg} border ${themeStyles.border} rounded-xl shadow-md p-3 page-break-after overflow-hidden`}
+                  className={`pdf-page ${themeStyles.bg} border ${themeStyles.border} rounded-xl shadow-md p-2 page-break-after overflow-hidden`}
                   data-pdf-width-mm="279.4"
                   data-pdf-height-mm="215.9"
                   style={{
                     width: '100%',
                     aspectRatio: '279.4 / 215.9',
-                    minHeight: '500px',
                   }}
                 >
-                  <div className="grid grid-cols-3 h-full divide-x divide-dashed divide-slate-300">
+                  <div className="grid grid-cols-3 h-full min-h-0 divide-x divide-dashed divide-slate-300">
                     {sheet.panels.map((panel) => (
-                      <div key={`sheet-panel-${panel.panelNumber}`} className="h-full px-2">
+                      <div key={`sheet-panel-${panel.panelNumber}`} className="h-full min-h-0 min-w-0 px-2 overflow-hidden">
                         {renderPanel(panel)}
                       </div>
                     ))}
@@ -860,13 +845,12 @@ export default function PocketGuideView({
                 </div>
 
                 <div
-                  className={`pdf-page ${themeStyles.bg} border ${themeStyles.border} rounded-xl shadow-md p-2 page-break-after overflow-hidden`}
+                  className={`pdf-page ${themeStyles.bg} border ${themeStyles.border} rounded-xl shadow-md p-1.5 page-break-after overflow-hidden`}
                   data-pdf-width-mm="88.9"
                   data-pdf-height-mm="215.9"
                   style={{
                     width: '100%',
                     aspectRatio: '88.9 / 215.9',
-                    minHeight: '520px',
                   }}
                 >
                   {renderPanel(panel)}
