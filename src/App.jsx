@@ -223,7 +223,13 @@ export default function App() {
   const taxonTitle = selectedTaxon?.preferred_common_name || selectedTaxon?.name || 'Species';
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white transition-colors duration-200">
+    <div
+      className={`min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white transition-colors duration-200 ${
+        !hasFetched && species.length === 0 && !showSettings
+          ? 'h-screen overflow-hidden'
+          : ''
+      }`}
+    >
       {/* Top Navbar */}
       <Navbar
         onOpenExport={() => setShowExportModal(true)}
@@ -235,9 +241,13 @@ export default function App() {
       />
 
       <main
-        className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${
+        className={`flex-1 w-full mx-auto px-4 sm:px-6 lg:px-8 ${
           showExportModal ? 'no-print' : ''
-        } ${!hasFetched && species.length === 0 ? 'flex flex-col justify-center min-h-[65vh]' : ''}`}
+        } ${
+          !hasFetched && species.length === 0
+            ? 'max-w-4xl flex flex-col justify-center items-center py-2 sm:py-3'
+            : 'max-w-7xl py-6 sm:py-8'
+        }`}
       >
         {/* Step 1: Centralized Single-Step Taxa & Geographic Region Panel */}
         <SearchPanel
@@ -256,7 +266,7 @@ export default function App() {
         />
 
         {/* Optional Step: Image Overlay & Typography Customizer Accordion (Centralized) */}
-        <div className="max-w-3xl mx-auto mb-6 no-print">
+        <div className="max-w-3xl mx-auto w-full mb-0 no-print">
           <button
             type="button"
             onClick={() => setShowSettings((v) => !v)}
@@ -307,7 +317,7 @@ export default function App() {
 
         {/* Error Notification */}
         {errorMessage && (
-          <div className="max-w-3xl mx-auto bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 p-4 rounded-xl mb-6 flex items-start gap-3">
+          <div className="max-w-3xl mx-auto w-full bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 p-4 rounded-xl mt-4 mb-2 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
             <div>
               <div className="font-bold text-sm">Error Loading Observations</div>
@@ -357,8 +367,12 @@ export default function App() {
       />
 
       {/* Application Footer */}
-      <footer className="mt-16 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500 dark:text-slate-400 no-print transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <footer
+        className={`bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400 no-print transition-colors duration-200 shrink-0 ${
+          !hasFetched && species.length === 0 ? 'py-3' : 'mt-14 py-6'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-2">
           <div>
             Built with <span className="text-emerald-600 dark:text-emerald-400 font-bold">iNaturalist Open API</span> • Open Source Biodiversity Data
           </div>

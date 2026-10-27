@@ -123,10 +123,10 @@ export default function SearchPanel({
   };
 
   return (
-    <div className="max-w-3xl mx-auto w-full bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 mb-6 no-print transition-colors duration-200">
+    <div className="max-w-3xl mx-auto w-full bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200/90 dark:border-slate-800 p-5 sm:p-6 mb-3 sm:mb-4 no-print transition-colors duration-200">
       {/* Centralized Header */}
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200/80 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold mb-2.5 shadow-2xs">
+      <div className="text-center mb-4 sm:mb-5">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200/80 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold mb-2 shadow-2xs">
           <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
           <span>Step 1 • Select Taxa & Geographic Region</span>
         </div>
@@ -138,7 +138,7 @@ export default function SearchPanel({
         </p>
       </div>
 
-      <form onSubmit={handleFormSubmit} className="space-y-4">
+      <form onSubmit={handleFormSubmit} className="space-y-3.5">
         {/* Centralized Inputs (Side by Side) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           {/* Taxon Autocomplete Input */}
