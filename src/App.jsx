@@ -5,27 +5,48 @@ import OverlayControls from './components/OverlayControls';
 import SpeciesList from './components/SpeciesList';
 import ExportModal from './components/export/ExportModal';
 import { fetchSpeciesCounts, fetchTaxonPhotos, PRESETS } from './services/inaturalist';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Sliders, ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function App() {
-  // Search parameters state
+  // Search parameters state (Default: Birds of Assam)
   const [selectedTaxon, setSelectedTaxon] = useState(PRESETS[0].taxon);
   const [selectedPlace, setSelectedPlace] = useState(PRESETS[0].place);
   const [licenseFilter, setLicenseFilter] = useState('open');
   const [limit, setLimit] = useState(24); // number or 'all'
+
+  // Dark mode state with localStorage persistence & system preference fallback
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('bioguide_theme');
+      if (saved) return saved === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('bioguide_theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('bioguide_theme', 'light');
+    }
+  }, [darkMode]);
 
   // Species state
   const [species, setSpecies] = useState([]);
   const [totalResults, setTotalResults] = useState(0);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
   const [fetchProgress, setFetchProgress] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const abortControllerRef = useRef(null);
 
-  // Customizer / Overlay settings state
-  const [showSettings, setShowSettings] = useState(true);
+  // Customizer / Overlay settings state (Optional step: collapsed by default)
+  const [showSettings, setShowSettings] = useState(false);
   const [overlaySettings, setOverlaySettings] = useState({
     showCommonNameTop: true,
     showScientificNameTop: true,
@@ -40,8 +61,8 @@ export default function App() {
   // Export Modal state
   const [showExportModal, setShowExportModal] = useState(false);
 
-  // Perform search
-  const handleSearch = async (params) => {
+  // Perform search (Data is fetched only after user clicks Fetch)
+  const handleSearch = async (params = {}) => {
     // Cancel previous request if running
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -49,6 +70,7 @@ export default function App() {
     abortControllerRef.current = new AbortController();
 
     setIsLoading(true);
+    setHasFetched(true);
     setFetchProgress(null);
     setErrorMessage(null);
 
@@ -114,16 +136,6 @@ export default function App() {
     setIsLoading(false);
     setFetchProgress(null);
   };
-
-  // Initial load with default preset on first mount
-  useEffect(() => {
-    handleSearch({
-      placeId: PRESETS[0].place.id,
-      taxonId: PRESETS[0].taxon.id,
-      licenseFilter: 'open',
-      perPage: 24,
-    });
-  }, []);
 
   // Selection toggles
   const handleToggleSelect = (id) => {
@@ -211,21 +223,23 @@ export default function App() {
   const taxonTitle = selectedTaxon?.preferred_common_name || selectedTaxon?.name || 'Species';
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white transition-colors duration-200">
       {/* Top Navbar */}
       <Navbar
         onOpenExport={() => setShowExportModal(true)}
         speciesCount={selectedSpecies.length}
         onToggleSettings={() => setShowSettings((v) => !v)}
         showSettings={showSettings}
+        darkMode={darkMode}
+        onToggleDarkMode={() => setDarkMode((prev) => !prev)}
       />
 
       <main
         className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${
           showExportModal ? 'no-print' : ''
-        }`}
+        } ${!hasFetched && species.length === 0 ? 'flex flex-col justify-center min-h-[65vh]' : ''}`}
       >
-        {/* Search & Location/Taxon Panel */}
+        {/* Step 1: Centralized Single-Step Taxa & Geographic Region Panel */}
         <SearchPanel
           onSearch={handleSearch}
           isLoading={isLoading}
@@ -241,26 +255,68 @@ export default function App() {
           onCancelFetch={handleCancelFetch}
         />
 
-        {/* Overlay Customizer (Scientific Name, Common Name & Copyright) */}
-        <OverlayControls
-          overlaySettings={overlaySettings}
-          setOverlaySettings={setOverlaySettings}
-          isOpen={showSettings}
-          onClose={() => setShowSettings(false)}
-        />
+        {/* Optional Step: Image Overlay & Typography Customizer Accordion (Centralized) */}
+        <div className="max-w-3xl mx-auto mb-6 no-print">
+          <button
+            type="button"
+            onClick={() => setShowSettings((v) => !v)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-slate-50/80 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-200/90 dark:border-slate-800 rounded-2xl transition-all shadow-2xs group cursor-pointer"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-slate-100 group-hover:bg-emerald-50 dark:bg-slate-800 dark:group-hover:bg-emerald-950/60 text-slate-500 dark:text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 flex items-center justify-center transition-colors">
+                <Sliders className="w-4 h-4" />
+              </div>
+              <div className="text-left">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200/60 dark:border-slate-700">
+                    Optional Step
+                  </span>
+                  <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                    Image Overlay & Typography Customizer
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block mt-0.5">
+                  Fine-tune scientific names, common names, badges, positions, and copyright overlays
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-800 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/60 transition-colors flex items-center gap-1.5">
+                <span>{showSettings ? 'Hide Customizer' : 'Open Customizer'}</span>
+                {showSettings ? (
+                  <ChevronUp className="w-3.5 h-3.5" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5" />
+                )}
+              </span>
+            </div>
+          </button>
+
+          {showSettings && (
+            <div className="mt-3">
+              <OverlayControls
+                overlaySettings={overlaySettings}
+                setOverlaySettings={setOverlaySettings}
+                isOpen={true}
+                onClose={() => setShowSettings(false)}
+              />
+            </div>
+          )}
+        </div>
 
         {/* Error Notification */}
         {errorMessage && (
-          <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl mb-6 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
+          <div className="max-w-3xl mx-auto bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 p-4 rounded-xl mb-6 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
             <div>
               <div className="font-bold text-sm">Error Loading Observations</div>
-              <div className="text-xs text-red-600 mt-0.5">{errorMessage}</div>
+              <div className="text-xs text-red-600 dark:text-red-400 mt-0.5">{errorMessage}</div>
             </div>
           </div>
         )}
 
-        {/* Species List & Grid */}
+        {/* Species List & Grid (Displays data only after user clicks Fetch) */}
         <SpeciesList
           species={species}
           selectedIds={selectedIds}
@@ -274,7 +330,10 @@ export default function App() {
           selectedPlace={selectedPlace}
           selectedTaxon={selectedTaxon}
           onFetchAllSpecies={handleFetchAllSpecies}
+          onFetchCommonSpecies={handleFetchCommonSpecies}
+          onTriggerFetch={() => handleSearch({})}
           isLoading={isLoading}
+          hasFetched={hasFetched}
           onChangePhoto={handleChangeSpeciesPhoto}
           loadingPhotoSpeciesId={loadingPhotoSpeciesId}
         />
@@ -298,10 +357,10 @@ export default function App() {
       />
 
       {/* Application Footer */}
-      <footer className="mt-16 bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 no-print">
+      <footer className="mt-16 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-500 dark:text-slate-400 no-print transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div>
-            Built with <span className="text-emerald-600 font-bold">iNaturalist Open API</span> • Open Source Biodiversity Data
+            Built with <span className="text-emerald-600 dark:text-emerald-400 font-bold">iNaturalist Open API</span> • Open Source Biodiversity Data
           </div>
           <div>
             Supports Scrollable PDF Field Guides • Tri-fold Pamphlets • Folding Pocket Guides (12-Panel) • Wall Posters

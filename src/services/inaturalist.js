@@ -266,43 +266,43 @@ export async function fetchSpeciesCounts({
 }
 
 /**
- * Curated presets for instant testing
+ * Curated presets for instant testing (India & sub-region specific)
  */
 export const PRESETS = [
   {
-    label: 'Birds of Costa Rica',
-    taxon: { id: 3, name: 'Aves', preferred_common_name: 'Birds' },
-    place: { id: 6924, display_name: 'Costa Rica' },
-    icon: '🦜',
+    label: 'Birds of Assam',
+    taxon: { id: 3, name: 'Aves', preferred_common_name: 'Birds', rank: 'class' },
+    place: { id: 7453, name: 'Assam', display_name: 'Assam, IN', place_type_name: 'State' },
+    icon: '🦅',
   },
   {
-    label: 'Butterflies of California',
-    taxon: { id: 47224, name: 'Papilionoidea', preferred_common_name: 'Butterflies' },
-    place: { id: 14, display_name: 'California, US' },
+    label: 'Birds of Western Ghats',
+    taxon: { id: 3, name: 'Aves', preferred_common_name: 'Birds', rank: 'class' },
+    place: { id: 53229, name: 'Western Ghats', display_name: 'Western Ghats, IN', place_type_name: 'Region' },
+    icon: '🦚',
+  },
+  {
+    label: 'Butterflies of Northeast India',
+    taxon: { id: 47224, name: 'Papilionoidea', preferred_common_name: 'Butterflies', rank: 'superfamily' },
+    place: { id: 7453, name: 'Assam', display_name: 'Assam, IN', place_type_name: 'State' },
     icon: '🦋',
   },
   {
-    label: 'Fungi of Pacific Northwest',
-    taxon: { id: 47170, name: 'Fungi', preferred_common_name: 'Fungi' },
-    place: { id: 46, display_name: 'Washington, US' },
-    icon: '🍄',
+    label: 'Mammals of Central India',
+    taxon: { id: 40151, name: 'Mammalia', preferred_common_name: 'Mammals', rank: 'class' },
+    place: { id: 7745, name: 'Madhya Pradesh', display_name: 'Madhya Pradesh, IN', place_type_name: 'State' },
+    icon: '🐅',
   },
   {
-    label: 'Mammals of Yellowstone',
-    taxon: { id: 40151, name: 'Mammalia', preferred_common_name: 'Mammals' },
-    place: { id: 1623, display_name: 'Yellowstone National Park, US' },
-    icon: '🐺',
-  },
-  {
-    label: 'Wildflowers of Western Australia',
-    taxon: { id: 47126, name: 'Plantae', preferred_common_name: 'Plants' },
-    place: { id: 6825, display_name: 'Western Australia, AU' },
+    label: 'Himalayan Flora',
+    taxon: { id: 47126, name: 'Plantae', preferred_common_name: 'Plants', rank: 'kingdom' },
+    place: { id: 6681, name: 'Uttarakhand', display_name: 'Uttarakhand, IN', place_type_name: 'State' },
     icon: '🌸',
   },
   {
-    label: 'Marine Fish of Hawaii',
-    taxon: { id: 47273, name: 'Actinopterygii', preferred_common_name: 'Ray-finned Fishes' },
-    place: { id: 11, display_name: 'Hawaii, US' },
-    icon: '🐠',
+    label: 'Wildlife of India',
+    taxon: { id: 1, name: 'Animalia', preferred_common_name: 'Animals', rank: 'kingdom' },
+    place: { id: 6683, name: 'India', display_name: 'India', place_type_name: 'Country' },
+    icon: '🇮🇳',
   },
 ];

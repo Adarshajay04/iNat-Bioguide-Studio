@@ -122,16 +122,16 @@ export default function ExportModal({
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md overflow-y-auto flex flex-col print:static print:bg-white print:p-0 print:m-0 print:overflow-visible print:block">
       {/* Modal Fixed Top Bar */}
-      <div className="sticky top-0 z-40 bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm no-print">
+      <div className="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm no-print transition-colors duration-200">
         {/* Tab Selection */}
         <div className="flex items-center gap-1 sm:gap-2">
           <button
             type="button"
             onClick={() => setActiveTab('field-guide')}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'field-guide'
                 ? 'bg-emerald-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
             <FileText className="w-4 h-4" />
@@ -141,10 +141,10 @@ export default function ExportModal({
           <button
             type="button"
             onClick={() => setActiveTab('pamphlet')}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'pamphlet'
                 ? 'bg-emerald-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
             <BookOpen className="w-4 h-4" />
@@ -154,10 +154,10 @@ export default function ExportModal({
           <button
             type="button"
             onClick={() => setActiveTab('poster')}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'poster'
                 ? 'bg-emerald-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
             <Palette className="w-4 h-4" />
@@ -167,10 +167,10 @@ export default function ExportModal({
           <button
             type="button"
             onClick={() => setActiveTab('pocket-guide')}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'pocket-guide'
                 ? 'bg-emerald-600 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
             <Layers className="w-4 h-4" />
@@ -181,12 +181,12 @@ export default function ExportModal({
         {/* Action Controls */}
         <div className="flex items-center gap-2 flex-wrap">
           {/* Quality Selector */}
-          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs">
-            <span className="text-[11px] font-bold text-slate-500 pl-1.5 hidden sm:inline">Quality:</span>
+          <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs">
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 pl-1.5 hidden sm:inline">Quality:</span>
             <select
               value={pdfQuality}
               onChange={(e) => setPdfQuality(e.target.value)}
-              className="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer"
+              className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-2 py-1 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
               title="Select PDF render quality"
             >
               <option value="ultra">🌟 Ultra 300 DPI (Print)</option>
@@ -198,10 +198,10 @@ export default function ExportModal({
           <button
             type="button"
             onClick={onOpenSettings}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
             title="Adjust photo names and copyright overlays"
           >
-            <Sliders className="w-3.5 h-3.5 text-emerald-600" />
+            <Sliders className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
             <span className="hidden sm:inline">Adjust Overlays</span>
           </button>
 
@@ -209,7 +209,7 @@ export default function ExportModal({
           <button
             type="button"
             onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs transition-colors cursor-pointer"
             title="Open browser print dialog to save as crisp vector PDF or print"
           >
             <Printer className="w-4 h-4" />
@@ -221,7 +221,7 @@ export default function ExportModal({
             type="button"
             onClick={handleDownloadPdf}
             disabled={isExporting}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-800 hover:bg-slate-900 text-white shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-800 hover:bg-slate-900 text-white shadow-xs transition-colors cursor-pointer"
             title="Download direct PDF file"
           >
             {isExporting ? (
@@ -248,10 +248,10 @@ export default function ExportModal({
               type="button"
               onClick={handleDownloadPng}
               disabled={isExporting}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-50 dark:bg-emerald-950/70 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-colors cursor-pointer"
               title="Download high-res PNG image"
             >
-              <ImageIcon className="w-4 h-4 text-emerald-600" />
+              <ImageIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <span className="hidden sm:inline">PNG Image</span>
             </button>
           )}
@@ -260,8 +260,8 @@ export default function ExportModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors ml-1"
-            title="Close export preview"
+            className="p-2 rounded-xl text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer ml-1"
+            title="Close export viewer (Esc)"
           >
             <X className="w-5 h-5" />
           </button>

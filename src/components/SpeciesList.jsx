@@ -12,6 +12,7 @@ import {
   ChevronRight,
   ExternalLink,
   Zap,
+  Loader2,
 } from 'lucide-react';
 import SpeciesCard from './SpeciesCard';
 
@@ -28,7 +29,10 @@ export default function SpeciesList({
   selectedPlace,
   selectedTaxon,
   onFetchAllSpecies,
+  onFetchCommonSpecies,
+  onTriggerFetch,
   isLoading,
+  hasFetched = false,
   onChangePhoto,
   loadingPhotoSpeciesId,
 }) {
@@ -66,15 +70,39 @@ export default function SpeciesList({
   const selectedCount = selectedIds.size;
   const isAllSelected = selectedCount === species.length && species.length > 0;
 
-  if (species.length === 0) {
+  const taxonDisplayName = selectedTaxon?.preferred_common_name || selectedTaxon?.name || 'Birds';
+  const placeDisplayName = selectedPlace?.display_name || selectedPlace?.name || 'Assam, IN';
+
+  // Before fetch: keep landing view completely clean and minimal
+  if (!hasFetched && !isLoading && species.length === 0) {
+    return null;
+  }
+
+  // State 2: Loading initial fetch
+  if (isLoading && species.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center my-6">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl">
-          🌿
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-12 text-center my-6 max-w-md mx-auto transition-colors duration-200">
+        <Loader2 className="w-10 h-10 text-emerald-600 dark:text-emerald-400 animate-spin mx-auto mb-4" />
+        <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-1">
+          Fetching from iNaturalist...
+        </h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Loading {taxonDisplayName} observations in {placeDisplayName}
+        </p>
+      </div>
+    );
+  }
+
+  // State 3: Fetched but 0 results found
+  if (hasFetched && species.length === 0) {
+    return (
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 p-12 text-center my-6 max-w-lg mx-auto transition-colors duration-200">
+        <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center text-2xl">
+          🔍
         </div>
-        <h3 className="text-lg font-bold text-slate-800 mb-1">No Species Loaded Yet</h3>
-        <p className="text-sm text-slate-500 max-w-md mx-auto mb-6">
-          Use the search bar above to choose a Taxon and a Place, or click one of the quick presets.
+        <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-1">No Observations Found</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-4">
+          No open-license research observations were found for {taxonDisplayName} in {placeDisplayName}. Try choosing a broader taxa or a neighboring region.
         </p>
       </div>
     );
@@ -83,14 +111,14 @@ export default function SpeciesList({
   return (
     <div className="space-y-6">
       {/* Top Main Toolbar */}
-      <div className="bg-white rounded-2xl shadow-xs border border-slate-200 p-4 sm:p-5 flex flex-col gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xs border border-slate-200 dark:border-slate-800 p-4 sm:p-5 flex flex-col gap-4 transition-colors duration-200">
         {/* Row 1: Statistics and Fetch All Trigger */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+            <div className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span>{species.length.toLocaleString()} Species Loaded</span>
               {totalResults > species.length && (
-                <span className="text-xs font-normal text-slate-400">
+                <span className="text-xs font-normal text-slate-400 dark:text-slate-500">
                   (of {totalResults.toLocaleString()} recorded in {selectedPlace?.display_name || selectedPlace?.name || 'region'})
                 </span>
               )}
@@ -102,10 +130,10 @@ export default function SpeciesList({
                 type="button"
                 onClick={onFetchAllSpecies}
                 disabled={isLoading}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 transition-colors shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/70 dark:hover:bg-amber-900/80 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700 transition-colors shadow-2xs cursor-pointer"
                 title="Fetch all verified species for this region"
               >
-                <Zap className="w-3.5 h-3.5 text-amber-600 fill-amber-600" />
+                <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 fill-amber-600 dark:fill-amber-400" />
                 <span>Fetch All {totalResults.toLocaleString()} Species</span>
               </button>
             )}
@@ -119,7 +147,7 @@ export default function SpeciesList({
             <button
               type="button"
               onClick={isAllSelected ? onDeselectAll : onSelectAll}
-              className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+              className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
             >
               {isAllSelected ? 'Deselect All' : `All (${species.length})`}
             </button>
@@ -129,14 +157,14 @@ export default function SpeciesList({
                 <button
                   type="button"
                   onClick={() => onSelectTopN(24)}
-                  className="px-2 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                  className="px-2 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
                 >
                   Top 24
                 </button>
                 <button
                   type="button"
                   onClick={() => onSelectTopN(48)}
-                  className="px-2 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                  className="px-2 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
                 >
                   Top 48
                 </button>
@@ -147,7 +175,7 @@ export default function SpeciesList({
               <button
                 type="button"
                 onClick={() => onSelectTopN(100)}
-                className="px-2 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                className="px-2 py-1 text-xs font-medium rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
               >
                 Top 100
               </button>
@@ -157,14 +185,14 @@ export default function SpeciesList({
               <button
                 type="button"
                 onClick={() => onSelectTopN(150)}
-                className="px-2 py-1 text-xs font-semibold rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors"
+                className="px-2 py-1 text-xs font-semibold rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/70 dark:hover:bg-emerald-900/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-colors cursor-pointer"
                 title="Select top 150 common species for 12-panel pocket guide"
               >
                 Top 150 (Pocket Guide)
               </button>
             )}
 
-            <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 ml-1">
+            <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800 ml-1">
               {selectedCount.toLocaleString()} Selected
             </span>
           </div>
@@ -181,19 +209,19 @@ export default function SpeciesList({
                 placeholder={`Search within ${species.length} species...`}
                 value={filterText}
                 onChange={(e) => setFilterText(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500 bg-slate-50 focus:bg-white"
+                className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-emerald-500 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-850 text-slate-900 dark:text-white placeholder-slate-400"
               />
             </div>
 
             {/* View Mode Switcher (Grid vs Table) */}
-            <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700">
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded-lg transition-colors ${
+                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                   viewMode === 'grid'
-                    ? 'bg-white shadow-xs text-emerald-700'
-                    : 'text-slate-500 hover:text-slate-800'
+                    ? 'bg-white dark:bg-slate-700 shadow-xs text-emerald-700 dark:text-emerald-300'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
                 title="Photo Cards Grid View"
               >
@@ -202,10 +230,10 @@ export default function SpeciesList({
               <button
                 type="button"
                 onClick={() => setViewMode('table')}
-                className={`p-1.5 rounded-lg transition-colors ${
+                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                   viewMode === 'table'
-                    ? 'bg-white shadow-xs text-emerald-700'
-                    : 'text-slate-500 hover:text-slate-800'
+                    ? 'bg-white dark:bg-slate-700 shadow-xs text-emerald-700 dark:text-emerald-300'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
                 title="Dense Checklist Table View"
               >
@@ -219,10 +247,10 @@ export default function SpeciesList({
             type="button"
             onClick={onOpenExport}
             disabled={selectedCount === 0}
-            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition-all ${
+            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer ${
               selectedCount > 0
                 ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/25 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]'
-                : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed border border-transparent dark:border-slate-700'
             }`}
           >
             <Printer className="w-4 h-4" />
@@ -250,10 +278,10 @@ export default function SpeciesList({
         </div>
       ) : (
         /* High-Density Checklist Table View */
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs transition-colors duration-200">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[11px] tracking-wider">
+              <thead className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-750 text-slate-600 dark:text-slate-400 font-bold uppercase text-[11px] tracking-wider">
                 <tr>
                   <th className="py-3 px-4 w-12 text-center">
                     <input
@@ -271,8 +299,8 @@ export default function SpeciesList({
                   <th className="py-3 px-4 text-center">External</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
-                {paginatedSpecies.map((s, index) => {
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                {paginatedSpecies.map((s) => {
                   const isChecked = selectedIds.has(s.id);
                   const photo = s.photo;
                   const thumbUrl = photo?.squareUrl || photo?.mediumUrl;
@@ -280,8 +308,8 @@ export default function SpeciesList({
                   return (
                     <tr
                       key={s.id}
-                      className={`hover:bg-slate-50/80 transition-colors ${
-                        isChecked ? 'bg-emerald-50/30' : ''
+                      className={`hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors ${
+                        isChecked ? 'bg-emerald-50/30 dark:bg-emerald-950/20' : ''
                       }`}
                     >
                       <td className="py-2.5 px-4 text-center">
@@ -298,26 +326,26 @@ export default function SpeciesList({
                             src={thumbUrl}
                             alt={s.commonName}
                             crossOrigin="anonymous"
-                            className="w-10 h-10 rounded-lg object-cover border border-slate-200"
+                            className="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-slate-700"
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 text-xs">
+                          <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-xs">
                             🌿
                           </div>
                         )}
                       </td>
-                      <td className="py-2.5 px-4 font-bold text-slate-900">
+                      <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-white">
                         {s.commonName}
                       </td>
-                      <td className="py-2.5 px-4 italic text-slate-600 font-serif">
+                      <td className="py-2.5 px-4 italic text-slate-600 dark:text-slate-400 font-serif">
                         {s.scientificName}
                       </td>
                       <td className="py-2.5 px-4">
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
                           {s.iconicTaxon || s.rank}
                         </span>
                       </td>
-                      <td className="py-2.5 px-4 text-right font-medium text-slate-600">
+                      <td className="py-2.5 px-4 text-right font-medium text-slate-600 dark:text-slate-400">
                         {s.count?.toLocaleString()} obs
                       </td>
                       <td className="py-2.5 px-4 text-center">
@@ -325,7 +353,7 @@ export default function SpeciesList({
                           href={`https://www.inaturalist.org/taxa/${s.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-slate-400 hover:text-emerald-600 inline-flex items-center gap-1"
+                          className="text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 inline-flex items-center gap-1"
                           title="View on iNaturalist"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
@@ -342,7 +370,7 @@ export default function SpeciesList({
 
       {/* Pagination Controls Bar */}
       {filteredSpecies.length > 24 && (
-        <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600 dark:text-slate-400 transition-colors duration-200">
           <div className="flex items-center gap-2">
             <span>Show per page:</span>
             <select
@@ -351,14 +379,14 @@ export default function SpeciesList({
                 const val = e.target.value;
                 setPageSize(val === 'all' ? 'all' : Number(val));
               }}
-              className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 font-semibold text-slate-800 focus:outline-none"
+              className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 font-semibold text-slate-800 dark:text-slate-200 focus:outline-none"
             >
               <option value={24}>24 species</option>
               <option value={48}>48 species</option>
               <option value={96}>96 species</option>
               <option value="all">Show All ({filteredSpecies.length})</option>
             </select>
-            <span className="text-slate-400 ml-2">
+            <span className="text-slate-400 dark:text-slate-500 ml-2">
               Showing {startIndex + 1}–
               {Math.min(startIndex + paginatedSpecies.length, filteredSpecies.length)} of{' '}
               {filteredSpecies.length.toLocaleString()}
@@ -371,18 +399,18 @@ export default function SpeciesList({
                 type="button"
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="p-1.5 rounded-lg border border-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50"
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="font-semibold text-slate-800">
+              <span className="font-semibold text-slate-800 dark:text-slate-200">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 type="button"
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="p-1.5 rounded-lg border border-slate-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50"
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -392,7 +420,7 @@ export default function SpeciesList({
       )}
 
       {filteredSpecies.length === 0 && (
-        <div className="text-center py-12 text-slate-400 text-sm">
+        <div className="text-center py-12 text-slate-400 dark:text-slate-500 text-sm">
           No species found matching "{filterText}".
         </div>
       )}

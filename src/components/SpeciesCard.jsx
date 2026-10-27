@@ -33,10 +33,10 @@ export default function SpeciesCard({
 
   return (
     <div
-      className={`group relative rounded-2xl bg-white border transition-all duration-200 overflow-hidden flex flex-col ${
+      className={`group relative rounded-2xl bg-white dark:bg-slate-900 border transition-all duration-200 overflow-hidden flex flex-col ${
         isSelected
-          ? 'border-emerald-400 ring-2 ring-emerald-500/20 shadow-md'
-          : 'border-slate-200 hover:border-slate-300 shadow-xs opacity-75 hover:opacity-100'
+          ? 'border-emerald-500 ring-2 ring-emerald-500/20 shadow-md'
+          : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs opacity-80 hover:opacity-100'
       }`}
     >
       {/* Top action bar: Selection checkbox & Photo switcher */}
@@ -71,7 +71,7 @@ export default function SpeciesCard({
           className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all shadow-md cursor-pointer ${
             isSelected
               ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-              : 'bg-white/90 text-slate-400 hover:text-slate-700 border border-slate-200'
+              : 'bg-white/90 dark:bg-slate-800/90 text-slate-400 dark:text-slate-300 hover:text-slate-700 dark:hover:text-white border border-slate-200 dark:border-slate-700'
           }`}
           title={isSelected ? 'Included in export' : 'Excluded from export'}
         >
@@ -80,7 +80,7 @@ export default function SpeciesCard({
       </div>
 
       {/* Photo Container with Overlays */}
-      <div className="relative aspect-4/3 w-full bg-slate-100 overflow-hidden">
+      <div className="relative aspect-4/3 w-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
         {!imgError && photoUrl ? (
           <img
             src={photoUrl}
@@ -102,7 +102,7 @@ export default function SpeciesCard({
             }`}
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 p-4 text-center">
+          <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-4 text-center">
             <ImageIcon className="w-8 h-8 mb-1 stroke-1" />
             <span className="text-xs">No preview photo</span>
           </div>
@@ -196,29 +196,29 @@ export default function SpeciesCard({
       <div className="p-3.5 flex-1 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between gap-1 mb-1">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+            <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
               {species.iconicTaxon || species.rank}
             </span>
-            <span className="text-[11px] font-medium text-slate-500">
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
               {species.count?.toLocaleString()} obs
             </span>
           </div>
 
-          <h4 className="font-bold text-slate-900 text-sm leading-tight group-hover:text-emerald-700 transition-colors line-clamp-1">
+          <h4 className="font-bold text-slate-900 dark:text-white text-sm leading-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
             {species.commonName}
           </h4>
-          <p className="text-xs text-slate-500 italic mt-0.5 line-clamp-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 italic mt-0.5 line-clamp-1">
             {species.scientificName}
           </p>
         </div>
 
         {/* Quick Links */}
-        <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
           <a
             href={`https://www.inaturalist.org/taxa/${species.id}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-emerald-600 flex items-center gap-1 transition-colors"
+            className="hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center gap-1 transition-colors"
             title="View on iNaturalist"
           >
             <span>iNat #{species.id}</span>
@@ -230,7 +230,7 @@ export default function SpeciesCard({
               href={species.wikipediaUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-emerald-600 transition-colors"
+              className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
               title="Read Wikipedia article"
             >
               Wikipedia

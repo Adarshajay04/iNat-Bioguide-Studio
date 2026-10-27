@@ -25,17 +25,17 @@ export default function OverlayControls({
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl border border-emerald-200/80 p-5 sm:p-6 mb-8 transition-all animate-in fade-in-50 duration-200 no-print">
-      <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-emerald-200/80 dark:border-emerald-800/60 p-5 sm:p-6 mb-8 transition-all animate-in fade-in-50 duration-200 no-print">
+      <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
-            <Layers className="w-4 h-4 text-emerald-700" />
+          <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold">
+            <Layers className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-900 text-base sm:text-lg">
+            <h3 className="font-bold text-slate-900 dark:text-white text-base sm:text-lg">
               Image Overlay & Typography Customizer
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Customize scientific name, common name, and photographer attribution badges on each photo
             </p>
           </div>
@@ -43,7 +43,7 @@ export default function OverlayControls({
 
         <button
           onClick={onClose}
-          className="text-xs font-semibold text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+          className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
         >
           Close Customizer ✕
         </button>
@@ -51,17 +51,17 @@ export default function OverlayControls({
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left column: Top Overlay (Names) */}
-        <div className="lg:col-span-4 bg-slate-50/80 rounded-xl p-4 border border-slate-200">
+        <div className="lg:col-span-4 bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-2 mb-3">
-            <Type className="w-4 h-4 text-emerald-600" />
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+            <Type className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Top of Picture: Name Overlays
             </h4>
           </div>
 
           <div className="space-y-3">
             {/* Common Name Checkbox */}
-            <label className="flex items-start gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200/80 cursor-pointer hover:border-emerald-300 transition-colors">
+            <label className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 cursor-pointer hover:border-emerald-300 dark:hover:border-emerald-500 transition-colors">
               <input
                 type="checkbox"
                 checked={showCommonNameTop}
@@ -69,15 +69,15 @@ export default function OverlayControls({
                 className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 h-4 w-4"
               />
               <div className="text-xs">
-                <span className="font-bold text-slate-800 block">Show Common Name on Top</span>
-                <span className="text-slate-500 text-[11px]">
+                <span className="font-bold text-slate-800 dark:text-slate-100 block">Show Common Name on Top</span>
+                <span className="text-slate-500 dark:text-slate-400 text-[11px]">
                   e.g., "Red-tailed Hawk", "Monarch Butterfly"
                 </span>
               </div>
             </label>
 
             {/* Scientific Name Checkbox */}
-            <label className="flex items-start gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200/80 cursor-pointer hover:border-emerald-300 transition-colors">
+            <label className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 cursor-pointer hover:border-emerald-300 dark:hover:border-emerald-500 transition-colors">
               <input
                 type="checkbox"
                 checked={showScientificNameTop}
@@ -85,8 +85,8 @@ export default function OverlayControls({
                 className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 h-4 w-4"
               />
               <div className="text-xs">
-                <span className="font-bold text-slate-800 block">Show Scientific Name on Top</span>
-                <span className="text-slate-500 text-[11px]">
+                <span className="font-bold text-slate-800 dark:text-slate-100 block">Show Scientific Name on Top</span>
+                <span className="text-slate-500 dark:text-slate-400 text-[11px]">
                   e.g., <em className="italic">Buteo jamaicensis</em> (Latin binomial)
                 </span>
               </div>
@@ -95,17 +95,17 @@ export default function OverlayControls({
             {/* Order selector if both are enabled */}
             {showCommonNameTop && showScientificNameTop && (
               <div className="pt-2">
-                <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">
                   Name Hierarchy Order
                 </label>
                 <div className="grid grid-cols-2 gap-1.5">
                   <button
                     type="button"
                     onClick={() => updateSetting('nameOrder', 'common_first')}
-                    className={`px-2 py-1.5 text-xs rounded-md border font-medium transition-all ${
+                    className={`px-2 py-1.5 text-xs rounded-lg border font-medium transition-all cursor-pointer ${
                       nameOrder === 'common_first'
                         ? 'bg-emerald-600 text-white border-emerald-600'
-                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }`}
                   >
                     Common First
@@ -113,10 +113,10 @@ export default function OverlayControls({
                   <button
                     type="button"
                     onClick={() => updateSetting('nameOrder', 'scientific_first')}
-                    className={`px-2 py-1.5 text-xs rounded-md border font-medium transition-all ${
+                    className={`px-2 py-1.5 text-xs rounded-lg border font-medium transition-all cursor-pointer ${
                       nameOrder === 'scientific_first'
                         ? 'bg-emerald-600 text-white border-emerald-600'
-                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }`}
                   >
                     Scientific First
@@ -127,13 +127,13 @@ export default function OverlayControls({
 
             {/* Overlay Badge Theme */}
             <div className="pt-2">
-              <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">
                 Badge Background Style
               </label>
               <select
                 value={badgeStyle}
                 onChange={(e) => updateSetting('badgeStyle', e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-medium focus:outline-none focus:border-emerald-500"
+                className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:border-emerald-500"
               >
                 <option value="frosted_dark">Frosted Glass Dark (Recommended)</option>
                 <option value="solid_black">Solid Black Pill</option>
@@ -145,17 +145,17 @@ export default function OverlayControls({
         </div>
 
         {/* Center column: Bottom Overlay (Copyright & Attribution) */}
-        <div className="lg:col-span-4 bg-slate-50/80 rounded-xl p-4 border border-slate-200">
+        <div className="lg:col-span-4 bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-2 mb-3">
-            <ShieldAlert className="w-4 h-4 text-emerald-600" />
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+            <ShieldAlert className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
               Bottom of Picture: Copyright Attribution
             </h4>
           </div>
 
           <div className="space-y-3">
             {/* Show Author Copyright Toggle */}
-            <label className="flex items-start gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200/80 cursor-pointer hover:border-emerald-300 transition-colors">
+            <label className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 cursor-pointer hover:border-emerald-300 dark:hover:border-emerald-500 transition-colors">
               <input
                 type="checkbox"
                 checked={showAuthorCopyright}
@@ -163,17 +163,17 @@ export default function OverlayControls({
                 className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 h-4 w-4"
               />
               <div className="text-xs">
-                <span className="font-bold text-slate-800 block">
+                <span className="font-bold text-slate-800 dark:text-slate-100 block">
                   Display Author's Name as Copyright
                 </span>
-                <span className="text-slate-500 text-[11px]">
+                <span className="text-slate-500 dark:text-slate-400 text-[11px]">
                   e.g., "© Craig K. Hunt" (Mandatory for Creative Commons)
                 </span>
               </div>
             </label>
 
             {/* Include License Code Toggle */}
-            <label className="flex items-start gap-2.5 p-2.5 rounded-lg bg-white border border-slate-200/80 cursor-pointer hover:border-emerald-300 transition-colors">
+            <label className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 cursor-pointer hover:border-emerald-300 dark:hover:border-emerald-500 transition-colors">
               <input
                 type="checkbox"
                 checked={showLicenseCode}
@@ -181,8 +181,8 @@ export default function OverlayControls({
                 className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 h-4 w-4"
               />
               <div className="text-xs">
-                <span className="font-bold text-slate-800 block">Include License Badge</span>
-                <span className="text-slate-500 text-[11px]">
+                <span className="font-bold text-slate-800 dark:text-slate-100 block">Include License Badge</span>
+                <span className="text-slate-500 dark:text-slate-400 text-[11px]">
                   Appends license badge, e.g., "(CC BY-NC)" or "(CC0)"
                 </span>
               </div>
@@ -190,13 +190,13 @@ export default function OverlayControls({
 
             {/* Bottom Style */}
             <div className="pt-2">
-              <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+              <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase mb-1">
                 Bottom Credit Style
               </label>
               <select
                 value={bottomStyle}
                 onChange={(e) => updateSetting('bottomStyle', e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-medium focus:outline-none focus:border-emerald-500"
+                className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:border-emerald-500"
               >
                 <option value="dark_pill">Subtle Bottom-Left Pill</option>
                 <option value="dark_banner">Full-Width Dark Gradient</option>
@@ -207,7 +207,7 @@ export default function OverlayControls({
         </div>
 
         {/* Right column: Interactive Live Sample Preview */}
-        <div className="lg:col-span-4 bg-slate-900 rounded-xl p-4 text-white shadow-inner">
+        <div className="lg:col-span-4 bg-slate-900 rounded-2xl p-4 text-white shadow-inner">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
               <Eye className="w-3.5 h-3.5" />
@@ -216,7 +216,7 @@ export default function OverlayControls({
             <span className="text-[10px] text-slate-400">Updates in real time</span>
           </div>
 
-          <div className="relative rounded-lg overflow-hidden border border-slate-700 aspect-4/3 bg-slate-800 shadow-lg">
+          <div className="relative rounded-xl overflow-hidden border border-slate-700 aspect-4/3 bg-slate-800 shadow-lg">
             <img
               src="https://images.weserv.nl/?url=https%3A%2F%2Finaturalist-open-data.s3.amazonaws.com%2Fphotos%2F101327658%2Fmedium.jpg"
               alt="Sample species"
@@ -304,7 +304,7 @@ export default function OverlayControls({
           </div>
 
           <div className="mt-2 text-center text-[10px] text-slate-400">
-            This card preview applies uniformly across list, PDF, pamphlet, and poster exports.
+            This card preview applies uniformly across list, PDF, pamphlet, and pocket guide exports.
           </div>
         </div>
       </div>
