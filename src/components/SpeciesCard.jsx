@@ -33,14 +33,14 @@ export default function SpeciesCard({
 
   return (
     <div
-      className={`group relative rounded-2xl bg-white dark:bg-slate-900 border transition-all duration-200 overflow-hidden flex flex-col ${
+      className={`group relative rounded-lg bg-white dark:bg-stone-900 border transition-colors duration-150 overflow-hidden flex flex-col ${
         isSelected
-          ? 'border-emerald-500 ring-2 ring-emerald-500/20 shadow-md'
-          : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs opacity-80 hover:opacity-100'
+          ? 'border-emerald-700 dark:border-emerald-600 shadow-xs ring-1 ring-emerald-700/30'
+          : 'border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 opacity-90 hover:opacity-100 shadow-xs'
       }`}
     >
       {/* Top action bar: Selection checkbox & Photo switcher */}
-      <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5">
+      <div className="absolute top-2 right-2 z-20 flex items-center gap-1">
         {onChangePhoto && (
           <button
             type="button"
@@ -49,13 +49,13 @@ export default function SpeciesCard({
               onChangePhoto(species.id, 1);
             }}
             disabled={loadingPhotoSpeciesId === species.id}
-            className="h-7 px-2 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[10px] font-bold rounded-lg backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer group/btn"
-            title="Switch photo: Click to view alternative photos of this species with better visibility"
+            className="h-6 px-1.5 bg-stone-900/80 hover:bg-stone-900 text-stone-200 text-[10px] font-mono rounded border border-white/20 flex items-center gap-1 shadow-xs transition-colors cursor-pointer"
+            title="Alternative photo angle / specimen"
           >
             {loadingPhotoSpeciesId === species.id ? (
-              <Loader2 className="w-3 h-3 animate-spin text-emerald-400" />
+              <Loader2 className="w-2.5 h-2.5 animate-spin text-emerald-400" />
             ) : (
-              <RefreshCw className="w-3 h-3 text-emerald-400 transition-transform duration-300 group-hover/btn:rotate-180" />
+              <RefreshCw className="w-2.5 h-2.5 text-stone-400 group-hover:text-white" />
             )}
             <span>
               {species.photosList && species.photosList.length > 1
@@ -68,19 +68,19 @@ export default function SpeciesCard({
         <button
           type="button"
           onClick={() => onToggleSelect(species.id)}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all shadow-md cursor-pointer ${
+          className={`w-6 h-6 rounded flex items-center justify-center transition-colors shadow-xs cursor-pointer ${
             isSelected
-              ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-              : 'bg-white/90 dark:bg-slate-800/90 text-slate-400 dark:text-slate-300 hover:text-slate-700 dark:hover:text-white border border-slate-200 dark:border-slate-700'
+              ? 'bg-emerald-800 text-white hover:bg-emerald-900 dark:bg-emerald-700'
+              : 'bg-white/95 dark:bg-stone-800 text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 border border-stone-300 dark:border-stone-650'
           }`}
-          title={isSelected ? 'Included in export' : 'Excluded from export'}
+          title={isSelected ? 'Included in guide' : 'Excluded from guide'}
         >
-          {isSelected ? <Check className="w-4 h-4 stroke-[3]" /> : <Plus className="w-4 h-4" />}
+          {isSelected ? <Check className="w-3.5 h-3.5 stroke-[2.5]" /> : <Plus className="w-3.5 h-3.5" />}
         </button>
       </div>
 
       {/* Photo Container with Overlays */}
-      <div className="relative aspect-4/3 w-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+      <div className="relative aspect-4/3 w-full bg-stone-100 dark:bg-stone-850 overflow-hidden">
         {!imgError && photoUrl ? (
           <img
             src={photoUrl}
@@ -97,21 +97,21 @@ export default function SpeciesCard({
                 setImgError(true);
               }
             }}
-            className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${
+            className={`w-full h-full object-cover ${
               imgLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-4 text-center">
-            <ImageIcon className="w-8 h-8 mb-1 stroke-1" />
-            <span className="text-xs">No preview photo</span>
+          <div className="w-full h-full flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 p-4 text-center">
+            <ImageIcon className="w-6 h-6 mb-1 stroke-1" />
+            <span className="text-[11px]">No specimen photo</span>
           </div>
         )}
 
         {/* TOP OVERLAY: Scientific Name and/or Common Name */}
         {(showCommonNameTop || showScientificNameTop) && (
           <div
-            className={`absolute top-2.5 left-2.5 right-24 z-10 flex pointer-events-none ${
+            className={`absolute top-2 left-2 right-20 z-10 flex pointer-events-none ${
               topPosition === 'top-center'
                 ? 'justify-center'
                 : topPosition === 'top-right'
@@ -120,27 +120,27 @@ export default function SpeciesCard({
             }`}
           >
             <div
-              className={`px-2 py-1 rounded-md max-w-full truncate ${
+              className={`px-2 py-0.5 rounded max-w-full truncate ${
                 badgeStyle === 'frosted_dark'
-                  ? 'bg-black/65 backdrop-blur-md text-white border border-white/10 shadow-sm'
+                  ? 'bg-stone-900/80 backdrop-blur-xs text-white border border-white/10 shadow-xs'
                   : badgeStyle === 'solid_black'
-                  ? 'bg-black/90 text-white shadow-sm'
+                  ? 'bg-black/90 text-white shadow-xs'
                   : badgeStyle === 'light'
-                  ? 'bg-white/95 text-slate-900 shadow-sm'
-                  : 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]'
+                  ? 'bg-white/95 text-stone-900 shadow-xs border border-stone-200'
+                  : 'text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]'
               }`}
             >
               {nameOrder === 'common_first' ? (
                 <>
                   {showCommonNameTop && (
-                    <div className="font-bold text-xs leading-tight truncate">
+                    <div className="font-semibold text-xs leading-tight truncate">
                       {species.commonName}
                     </div>
                   )}
                   {showScientificNameTop && (
                     <div
-                      className={`text-[10px] italic leading-tight truncate ${
-                        badgeStyle === 'light' ? 'text-slate-600' : 'text-slate-300'
+                      className={`text-[10px] italic leading-tight truncate font-serif ${
+                        badgeStyle === 'light' ? 'text-stone-600' : 'text-stone-300'
                       }`}
                     >
                       {species.scientificName}
@@ -150,14 +150,14 @@ export default function SpeciesCard({
               ) : (
                 <>
                   {showScientificNameTop && (
-                    <div className="font-bold text-xs italic leading-tight truncate">
+                    <div className="font-semibold text-xs italic leading-tight truncate font-serif">
                       {species.scientificName}
                     </div>
                   )}
                   {showCommonNameTop && (
                     <div
                       className={`text-[10px] leading-tight truncate ${
-                        badgeStyle === 'light' ? 'text-slate-600' : 'text-slate-300'
+                        badgeStyle === 'light' ? 'text-stone-600' : 'text-stone-300'
                       }`}
                     >
                       {species.commonName}
@@ -174,15 +174,15 @@ export default function SpeciesCard({
           <div
             className={`absolute bottom-0 left-0 right-0 z-10 pointer-events-none ${
               bottomStyle === 'dark_banner'
-                ? 'bg-gradient-to-t from-black/85 via-black/40 to-transparent p-2 text-left'
-                : 'p-2 flex justify-start'
+                ? 'bg-gradient-to-t from-black/85 via-black/40 to-transparent p-1.5 text-left'
+                : 'p-1.5 flex justify-start'
             }`}
           >
             <div
-              className={`text-[10px] font-medium leading-tight truncate ${
+              className={`text-[9px] font-mono leading-tight truncate ${
                 bottomStyle === 'dark_pill'
-                  ? 'bg-black/70 backdrop-blur-xs text-slate-200 px-2 py-0.5 rounded-md border border-white/10 shadow-xs'
-                  : 'text-slate-100 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]'
+                  ? 'bg-stone-900/80 text-stone-200 px-1.5 py-0.5 rounded border border-white/10'
+                  : 'text-stone-100 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]'
               }`}
               title={photo?.rawAttribution || attributionText}
             >
@@ -192,37 +192,38 @@ export default function SpeciesCard({
         )}
       </div>
 
-      {/* Card Info Details */}
-      <div className="p-3.5 flex-1 flex flex-col justify-between">
+      {/* Specimen Plate Metadata */}
+      <div className="p-3 flex-1 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between gap-1 mb-1">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+            <span className="text-[10px] uppercase font-mono font-medium tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.2 rounded border border-emerald-200/60 dark:border-emerald-800/60">
               {species.iconicTaxon || species.rank}
             </span>
-            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            <span className="text-[10px] font-mono text-stone-500 dark:text-stone-400 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block"></span>
               {species.count?.toLocaleString()} obs
             </span>
           </div>
 
-          <h4 className="font-bold text-slate-900 dark:text-white text-sm leading-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
+          <h4 className="font-semibold text-stone-900 dark:text-stone-100 text-xs sm:text-sm leading-snug line-clamp-1">
             {species.commonName}
           </h4>
-          <p className="text-xs text-slate-500 dark:text-slate-400 italic mt-0.5 line-clamp-1">
+          <p className="text-[11px] text-stone-500 dark:text-stone-400 italic font-serif line-clamp-1">
             {species.scientificName}
           </p>
         </div>
 
-        {/* Quick Links */}
-        <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
+        {/* Quiet Reference Metadata */}
+        <div className="mt-2.5 pt-2 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-[11px] text-stone-400 dark:text-stone-500 font-mono">
           <a
             href={`https://www.inaturalist.org/taxa/${species.id}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center gap-1 transition-colors"
-            title="View on iNaturalist"
+            className="hover:text-emerald-700 dark:hover:text-emerald-400 flex items-center gap-1 transition-colors"
+            title="Inspect record on iNaturalist"
           >
-            <span>iNat #{species.id}</span>
-            <ExternalLink className="w-3 h-3" />
+            <span>#{species.id}</span>
+            <ExternalLink className="w-2.5 h-2.5" />
           </a>
 
           {species.wikipediaUrl && (
@@ -230,10 +231,10 @@ export default function SpeciesCard({
               href={species.wikipediaUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-              title="Read Wikipedia article"
+              className="hover:text-stone-700 dark:hover:text-stone-300 font-sans text-[10px] transition-colors"
+              title="Reference article"
             >
-              Wikipedia
+              Wiki
             </a>
           )}
         </div>

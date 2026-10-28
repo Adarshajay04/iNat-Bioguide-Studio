@@ -1,5 +1,5 @@
 import React from 'react';
-import { Compass, Calendar, MapPin, Feather, CheckSquare, Eye, RefreshCw, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, RefreshCw, Loader2 } from 'lucide-react';
 
 export default function FieldGuideView({
   species,
@@ -44,10 +44,10 @@ export default function FieldGuideView({
     return (
       <div
         key={s.id}
-        className="avoid-break border border-slate-200 rounded-xl overflow-hidden bg-slate-50/50 flex flex-col justify-between shadow-xs"
+        className="avoid-break border border-stone-200 rounded-xs overflow-hidden bg-white flex flex-col justify-between shadow-2xs"
       >
         {/* Photo with Overlays */}
-        <div className="relative aspect-16/10 w-full bg-slate-200 overflow-hidden">
+        <div className="relative aspect-16/10 w-full bg-stone-100 overflow-hidden">
           {photoUrl && (
             <img
               src={photoUrl}
@@ -73,18 +73,18 @@ export default function FieldGuideView({
                 onChangePhoto(s.id, 1);
               }}
               disabled={loadingPhotoSpeciesId === s.id}
-              className="no-print export-ignore absolute top-2 right-2 z-20 bg-black/75 hover:bg-black/95 active:scale-95 text-white text-[10px] font-bold px-2 py-1 rounded-lg backdrop-blur-md flex items-center gap-1 shadow-md border border-white/20 transition-all cursor-pointer group/btn"
-              title="Click to switch photo if the bird's face or body is hidden behind the name badge"
+              className="no-print export-ignore absolute top-1.5 right-1.5 z-20 bg-stone-900/85 hover:bg-black text-white text-[9px] font-mono px-2 py-0.5 rounded-2xs flex items-center gap-1 border border-white/20 transition-all cursor-pointer"
+              title="Switch photo for better feature visibility"
             >
               {loadingPhotoSpeciesId === s.id ? (
-                <Loader2 className="w-3 h-3 animate-spin text-emerald-400" />
+                <Loader2 className="w-2.5 h-2.5 animate-spin text-emerald-400" />
               ) : (
-                <RefreshCw className="w-3 h-3 text-emerald-400 transition-transform duration-300 group-hover/btn:rotate-180" />
+                <RefreshCw className="w-2.5 h-2.5 text-stone-300" />
               )}
               <span>
                 {s.photosList && s.photosList.length > 1
                   ? `${(s.photoIndex ?? 0) + 1}/${s.photosList.length}`
-                  : 'Change Photo'}
+                  : 'Alt Photo'}
               </span>
             </button>
           )}
@@ -92,7 +92,7 @@ export default function FieldGuideView({
           {/* TOP OVERLAY: Common / Scientific Name */}
           {(showCommonNameTop || showScientificNameTop) && (
             <div
-              className={`absolute top-2 left-2 right-2 flex pointer-events-none ${
+              className={`absolute top-1.5 left-1.5 right-16 flex pointer-events-none ${
                 topPosition === 'top-center'
                   ? 'justify-center'
                   : topPosition === 'top-right'
@@ -101,25 +101,25 @@ export default function FieldGuideView({
               }`}
             >
               <div
-                className={`px-2 py-1 rounded-md max-w-full truncate ${
+                className={`px-2 py-0.5 rounded-2xs max-w-full truncate ${
                   badgeStyle === 'frosted_dark'
-                    ? 'bg-black/65 backdrop-blur-xs text-white border border-white/10'
+                    ? 'bg-stone-900/85 text-white border border-white/10'
                     : badgeStyle === 'solid_black'
-                    ? 'bg-black/90 text-white'
+                    ? 'bg-black text-white'
                     : badgeStyle === 'light'
-                    ? 'bg-white/95 text-slate-900'
-                    : 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]'
+                    ? 'bg-white/95 text-stone-900 border border-stone-200'
+                    : 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]'
                 }`}
               >
                 {nameOrder === 'common_first' ? (
                   <>
                     {showCommonNameTop && (
-                      <div className="font-bold text-xs leading-tight truncate">
+                      <div className="font-semibold text-xs leading-tight truncate">
                         {s.commonName}
                       </div>
                     )}
                     {showScientificNameTop && (
-                      <div className="text-[10px] italic leading-tight truncate opacity-90">
+                      <div className="text-[10px] italic font-serif leading-tight truncate text-stone-300">
                         {s.scientificName}
                       </div>
                     )}
@@ -127,12 +127,12 @@ export default function FieldGuideView({
                 ) : (
                   <>
                     {showScientificNameTop && (
-                      <div className="font-bold text-xs italic leading-tight truncate">
+                      <div className="font-semibold text-xs italic font-serif leading-tight truncate">
                         {s.scientificName}
                       </div>
                     )}
                     {showCommonNameTop && (
-                      <div className="text-[10px] leading-tight truncate opacity-90">
+                      <div className="text-[10px] leading-tight truncate text-stone-300">
                         {s.commonName}
                       </div>
                     )}
@@ -142,20 +142,20 @@ export default function FieldGuideView({
             </div>
           )}
 
-          {/* BOTTOM OVERLAY: Author Name as Copyright */}
+          {/* BOTTOM OVERLAY: Attribution */}
           {showAuthorCopyright && (
             <div
-              className={`absolute bottom-0 left-0 right-0 pointer-events-none ${
+              className={`absolute bottom-0 left-0 right-0 z-10 pointer-events-none ${
                 bottomStyle === 'dark_banner'
-                  ? 'bg-gradient-to-t from-black/85 via-black/40 to-transparent p-1.5'
-                  : 'p-1.5 flex justify-start'
+                  ? 'bg-stone-900/80 p-1'
+                  : 'p-1 flex justify-start'
               }`}
             >
               <div
-                className={`text-[9px] font-medium leading-tight truncate ${
+                className={`text-[8.5px] font-mono leading-tight truncate ${
                   bottomStyle === 'dark_pill'
-                    ? 'bg-black/70 text-slate-200 px-1.5 py-0.5 rounded border border-white/10'
-                    : 'text-slate-100 drop-shadow-sm'
+                    ? 'bg-stone-900/85 text-stone-200 px-1.5 py-0.5 rounded-2xs border border-white/10'
+                    : 'text-stone-100 drop-shadow-xs'
                 }`}
               >
                 {attributionText}
@@ -169,30 +169,30 @@ export default function FieldGuideView({
           <div>
             <div className="flex items-start justify-between gap-2">
               <div className="truncate">
-                <h3 className="font-bold text-sm text-slate-900 leading-snug truncate">
+                <h3 className="font-semibold text-sm text-stone-900 leading-snug truncate">
                   {globalIndex}. {s.commonName}
                 </h3>
-                <p className="text-xs italic text-slate-500 font-serif truncate">
+                <p className="text-xs italic text-stone-600 font-serif truncate">
                   {s.scientificName}
                 </p>
               </div>
 
               <div className="text-right shrink-0">
-                <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                  {s.count?.toLocaleString()} records
+                <span className="text-[9.5px] font-mono text-stone-500 bg-stone-100 px-1.5 py-0.5 rounded-2xs border border-stone-200">
+                  {s.count?.toLocaleString()} obs
                 </span>
               </div>
             </div>
           </div>
 
           {/* Field Notes & Checkbox */}
-          <div className="mt-2.5 pt-2 border-t border-dashed border-slate-200 flex items-center justify-between text-xs text-slate-500">
+          <div className="mt-2.5 pt-2 border-t border-dashed border-stone-200 flex items-center justify-between text-xs text-stone-600">
             <div className="flex items-center gap-1.5">
-              <div className="w-3.5 h-3.5 border-2 border-slate-400 rounded-xs" />
-              <span className="font-medium text-slate-700 text-[11px]">Observed</span>
+              <div className="w-3 h-3 border border-stone-400 rounded-2xs bg-stone-50/50" />
+              <span className="font-medium text-[11px] text-stone-700">Observed</span>
             </div>
 
-            <div className="flex items-center gap-2 text-[10px] text-slate-400">
+            <div className="flex items-center gap-2 text-[10px] font-mono text-stone-400">
               <span>Date: _____</span>
               <span>Loc: _____</span>
             </div>
@@ -203,39 +203,38 @@ export default function FieldGuideView({
   };
 
   return (
-    <div id={id} className="max-w-4xl mx-auto space-y-8 print:space-y-0">
+    <div id={id} className="max-w-4xl mx-auto space-y-6 print:space-y-0">
       {pages.map((pageItems, pageIdx) => (
         <div
           key={pageIdx}
-          className="pdf-page bg-white text-slate-900 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200 page-break-after flex flex-col justify-between"
+          className="pdf-page bg-white text-stone-900 p-6 sm:p-8 rounded-none shadow-xs border border-stone-300 page-break-after flex flex-col justify-between"
           style={{ aspectRatio: '210 / 297', minHeight: '840px' }}
         >
-          {/* Page Header */}
-          <div className="border-b-2 border-emerald-700 pb-4 mb-6 flex items-end justify-between gap-4">
+          {/* Authentic Book Plate Header */}
+          <div className="border-b-2 border-stone-800 pb-3 mb-5 flex items-end justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-emerald-800 text-[11px] font-bold uppercase tracking-widest mb-1">
-                <Compass className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Field Guide & Checklist</span>
+              <div className="text-[9.5px] font-mono uppercase tracking-widest text-stone-500 mb-0.5">
+                Plate {pageIdx + 1} • Field Guide & Reference Checklist
               </div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              <h2 className="text-xl sm:text-2xl font-bold font-serif text-stone-900 tracking-tight leading-tight">
                 {taxonName || 'Taxa'} of {placeName || 'Region'}
               </h2>
-              <div className="flex items-center gap-3 text-xs text-slate-500 mt-1 flex-wrap">
-                <span className="flex items-center gap-1 font-medium text-slate-700">
-                  <MapPin className="w-3 h-3 text-emerald-600" />
+              <div className="flex items-center gap-3 text-xs text-stone-500 mt-1 flex-wrap font-mono">
+                <span className="flex items-center gap-1 text-stone-700">
+                  <MapPin className="w-3 h-3 text-stone-500" />
                   {placeName || 'Location'}
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-slate-400" />
+                  <Calendar className="w-3 h-3 text-stone-400" />
                   {currentDate}
                 </span>
               </div>
             </div>
 
-            <div className="text-right text-xs text-slate-400">
-              <span className="font-bold text-emerald-800">
-                Page {pageIdx + 1} of {pages.length}
+            <div className="text-right text-xs font-mono text-stone-500">
+              <span className="font-bold text-stone-800">
+                Plate {pageIdx + 1} of {pages.length}
               </span>
             </div>
           </div>
@@ -247,11 +246,11 @@ export default function FieldGuideView({
             )}
           </div>
 
-          {/* Page Footer */}
-          <div className="mt-6 pt-4 border-t border-slate-200 text-[11px] text-slate-400 flex items-center justify-between">
-            <span>BioGuide Studio • Sourced from iNaturalist verified records</span>
-            <span className="font-mono">
-              Page {pageIdx + 1} of {pages.length}
+          {/* Authentic Page Footer */}
+          <div className="mt-5 pt-3 border-t border-stone-200 text-[10px] font-mono text-stone-400 flex items-center justify-between">
+            <span>BioGuide Studio • Research-grade biodiversity data via iNaturalist</span>
+            <span>
+              Plate {pageIdx + 1} of {pages.length}
             </span>
           </div>
         </div>
