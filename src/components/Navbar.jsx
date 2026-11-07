@@ -39,7 +39,7 @@ export default function Navbar({
           <button
             type="button"
             onClick={onToggleDarkMode}
-            className="p-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 hover:bg-stone-100 dark:bg-stone-800 dark:hover:bg-stone-750 text-stone-600 dark:text-amber-400 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 hover:bg-stone-100 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-600 dark:text-amber-400 transition-colors cursor-pointer"
             title={darkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
             aria-label="Toggle color theme"
           >
@@ -53,7 +53,7 @@ export default function Navbar({
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
               showSettings
                 ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
-                : 'bg-white hover:bg-stone-50 dark:bg-stone-800 dark:hover:bg-stone-750 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700'
+                : 'bg-white hover:bg-stone-50 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700'
             }`}
             title="Configure species plate typography and attributions"
           >

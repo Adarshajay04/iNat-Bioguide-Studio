@@ -128,7 +128,7 @@ export default function SpeciesList({
                 type="button"
                 onClick={onFetchAllSpecies}
                 disabled={isLoading}
-                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-mono bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-750 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-mono bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
                 title="Fetch all verified observations for this region"
               >
                 <Database className="w-3 h-3 text-stone-500 dark:text-stone-400" />
@@ -143,7 +143,7 @@ export default function SpeciesList({
             <button
               type="button"
               onClick={isAllSelected ? onDeselectAll : onSelectAll}
-              className="px-2 py-0.5 rounded text-xs font-medium bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-750 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
+              className="px-2 py-0.5 rounded text-xs font-medium bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
             >
               {isAllSelected ? 'Deselect' : `All (${species.length})`}
             </button>
@@ -153,14 +153,14 @@ export default function SpeciesList({
                 <button
                   type="button"
                   onClick={() => onSelectTopN(24)}
-                  className="px-2 py-0.5 rounded text-xs font-medium bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-750 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
+                  className="px-2 py-0.5 rounded text-xs font-medium bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
                 >
                   Top 24
                 </button>
                 <button
                   type="button"
                   onClick={() => onSelectTopN(48)}
-                  className="px-2 py-0.5 rounded text-xs font-medium bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-750 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
+                  className="px-2 py-0.5 rounded text-xs font-medium bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 transition-colors cursor-pointer"
                 >
                   Top 48
                 </button>
@@ -195,7 +195,7 @@ export default function SpeciesList({
                 placeholder={`Filter loaded species...`}
                 value={filterText}
                 onChange={(e) => setFilterText(e.target.value)}
-                className="w-full pl-8 pr-2.5 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-stone-700 focus:outline-none focus:border-emerald-700 bg-stone-50 dark:bg-stone-850 text-stone-900 dark:text-white placeholder-stone-400"
+                className="w-full pl-8 pr-2.5 py-1.5 text-xs rounded-lg border border-stone-200 dark:border-stone-700 focus:outline-none focus:border-emerald-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500"
               />
             </div>
 
@@ -267,7 +267,7 @@ export default function SpeciesList({
         <div className="bg-white dark:bg-stone-900 rounded-lg border border-stone-200 dark:border-stone-800 overflow-hidden shadow-xs transition-colors duration-200">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-stone-50 dark:bg-stone-850 border-b border-stone-200 dark:border-stone-750 text-stone-600 dark:text-stone-400 font-semibold uppercase text-[10px] tracking-wider font-mono">
+              <thead className="bg-stone-50 dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 font-semibold uppercase text-[10px] tracking-wider font-mono">
                 <tr>
                   <th className="py-2.5 px-3 w-10 text-center">
                     <input
@@ -294,7 +294,7 @@ export default function SpeciesList({
                   return (
                     <tr
                       key={s.id}
-                      className={`hover:bg-stone-50/80 dark:hover:bg-stone-850/60 transition-colors ${
+                      className={`hover:bg-stone-50/80 dark:hover:bg-stone-800/60 transition-colors ${
                         isChecked ? 'bg-emerald-50/20 dark:bg-emerald-950/20' : ''
                       }`}
                     >

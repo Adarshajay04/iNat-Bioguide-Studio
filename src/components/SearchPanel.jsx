@@ -165,8 +165,8 @@ export default function SearchPanel({
                 }}
                 className={`w-full pl-3 pr-8 py-2 rounded-lg border text-xs sm:text-sm transition-colors outline-none ${
                   selectedTaxon
-                    ? 'border-emerald-600 bg-emerald-50/20 dark:bg-emerald-950/20 text-stone-900 dark:text-stone-100 font-medium'
-                    : 'border-stone-300 dark:border-stone-700 focus:border-emerald-700 dark:focus:border-emerald-500 bg-white dark:bg-stone-850 text-stone-900 dark:text-stone-100 placeholder-stone-400'
+                    ? 'border-emerald-600 bg-emerald-50/20 dark:bg-emerald-950/40 text-stone-900 dark:text-stone-100 font-medium'
+                    : 'border-stone-300 dark:border-stone-700 focus:border-emerald-700 dark:focus:border-emerald-500 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500'
                 }`}
               />
 
@@ -185,14 +185,14 @@ export default function SearchPanel({
                     <X className="w-3.5 h-3.5" />
                   </button>
                 ) : (
-                  <Search className="w-3.5 h-3.5 text-stone-400" />
+                  <Search className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500" />
                 )}
               </div>
             </div>
 
             {/* Taxon Autocomplete Dropdown */}
             {showTaxonDropdown && taxonResults.length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-1 z-40 bg-white dark:bg-stone-850 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 max-h-60 overflow-y-auto divide-y divide-stone-100 dark:divide-stone-800">
+              <div className="absolute left-0 right-0 top-full mt-1 z-40 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 max-h-60 overflow-y-auto divide-y divide-stone-100 dark:divide-stone-700">
                 {taxonResults.map((t) => (
                   <button
                     key={t.id}
@@ -202,7 +202,7 @@ export default function SearchPanel({
                       setTaxonQuery(t.preferred_common_name || t.name);
                       setShowTaxonDropdown(false);
                     }}
-                    className="w-full px-3 py-2 text-left hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center justify-between transition-colors text-xs cursor-pointer"
+                    className="w-full px-3 py-2 text-left hover:bg-stone-50 dark:hover:bg-stone-700/60 flex items-center justify-between transition-colors text-xs cursor-pointer"
                   >
                     <div className="flex items-center gap-2 overflow-hidden">
                       {t.default_photo ? (
@@ -213,7 +213,7 @@ export default function SearchPanel({
                           className="w-6 h-6 rounded object-cover border border-stone-200 dark:border-stone-700 shrink-0"
                         />
                       ) : (
-                        <div className="w-6 h-6 rounded bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-stone-400 text-[10px] shrink-0">
+                        <div className="w-6 h-6 rounded bg-stone-100 dark:bg-stone-700 flex items-center justify-center text-stone-400 dark:text-stone-300 text-[10px] shrink-0">
                           🌿
                         </div>
                       )}
@@ -226,7 +226,7 @@ export default function SearchPanel({
                         </div>
                       </div>
                     </div>
-                    <span className="text-[10px] font-mono text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800 shrink-0">
+                    <span className="text-[10px] font-mono text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800 shrink-0">
                       Select
                     </span>
                   </button>
@@ -263,8 +263,8 @@ export default function SearchPanel({
                 }}
                 className={`w-full pl-3 pr-8 py-2 rounded-lg border text-xs sm:text-sm transition-colors outline-none ${
                   selectedPlace
-                    ? 'border-emerald-600 bg-emerald-50/20 dark:bg-emerald-950/20 text-stone-900 dark:text-stone-100 font-medium'
-                    : 'border-stone-300 dark:border-stone-700 focus:border-emerald-700 dark:focus:border-emerald-500 bg-white dark:bg-stone-850 text-stone-900 dark:text-stone-100 placeholder-stone-400'
+                    ? 'border-emerald-600 bg-emerald-50/20 dark:bg-emerald-950/40 text-stone-900 dark:text-stone-100 font-medium'
+                    : 'border-stone-300 dark:border-stone-700 focus:border-emerald-700 dark:focus:border-emerald-500 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500'
                 }`}
               />
 
@@ -283,14 +283,14 @@ export default function SearchPanel({
                     <X className="w-3.5 h-3.5" />
                   </button>
                 ) : (
-                  <Search className="w-3.5 h-3.5 text-stone-400" />
+                  <Search className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500" />
                 )}
               </div>
             </div>
 
             {/* Place Autocomplete Dropdown */}
             {showPlaceDropdown && placeResults.length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-1 z-40 bg-white dark:bg-stone-850 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 max-h-60 overflow-y-auto divide-y divide-stone-100 dark:divide-stone-800">
+              <div className="absolute left-0 right-0 top-full mt-1 z-40 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 max-h-60 overflow-y-auto divide-y divide-stone-100 dark:divide-stone-700">
                 {placeResults.map((p) => (
                   <button
                     key={p.id}
@@ -300,7 +300,7 @@ export default function SearchPanel({
                       setPlaceQuery(p.display_name || p.name);
                       setShowPlaceDropdown(false);
                     }}
-                    className="w-full px-3 py-2 text-left hover:bg-stone-50 dark:hover:bg-stone-800 flex items-center justify-between transition-colors text-xs cursor-pointer"
+                    className="w-full px-3 py-2 text-left hover:bg-stone-50 dark:hover:bg-stone-700/60 flex items-center justify-between transition-colors text-xs cursor-pointer"
                   >
                     <div className="truncate mr-2">
                       <div className="font-semibold text-stone-900 dark:text-stone-100 truncate">
@@ -310,7 +310,7 @@ export default function SearchPanel({
                         {p.place_type_name ? `${p.place_type_name} • ` : ''}ID: {p.id}
                       </div>
                     </div>
-                    <span className="text-[10px] font-mono text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800 shrink-0">
+                    <span className="text-[10px] font-mono text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800 shrink-0">
                       Select
                     </span>
                   </button>
@@ -327,7 +327,7 @@ export default function SearchPanel({
             disabled={isLoading || (!selectedTaxon && !selectedPlace)}
             className={`w-full sm:w-auto min-w-[240px] py-2.5 px-6 rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer ${
               isLoading || (!selectedTaxon && !selectedPlace)
-                ? 'bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-600 cursor-not-allowed border border-stone-200 dark:border-stone-750'
+                ? 'bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-600 cursor-not-allowed border border-stone-200 dark:border-stone-700'
                 : 'bg-emerald-800 hover:bg-emerald-900 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white'
             }`}
           >
@@ -416,7 +416,7 @@ export default function SearchPanel({
                   className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded border transition-colors cursor-pointer ${
                     isActive
                       ? 'bg-emerald-800 text-white border-emerald-800 font-medium'
-                      : 'bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-750 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700'
+                      : 'bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700'
                   }`}
                   title={`Query ${p.label}`}
                 >

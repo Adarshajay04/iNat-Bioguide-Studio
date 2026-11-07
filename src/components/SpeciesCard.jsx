@@ -71,7 +71,7 @@ export default function SpeciesCard({
           className={`w-6 h-6 rounded flex items-center justify-center transition-colors shadow-xs cursor-pointer ${
             isSelected
               ? 'bg-emerald-800 text-white hover:bg-emerald-900 dark:bg-emerald-700'
-              : 'bg-white/95 dark:bg-stone-800 text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 border border-stone-300 dark:border-stone-650'
+              : 'bg-white/95 dark:bg-stone-800 text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 border border-stone-300 dark:border-stone-700'
           }`}
           title={isSelected ? 'Included in guide' : 'Excluded from guide'}
         >
@@ -80,7 +80,7 @@ export default function SpeciesCard({
       </div>
 
       {/* Photo Container with Overlays */}
-      <div className="relative aspect-4/3 w-full bg-stone-100 dark:bg-stone-850 overflow-hidden">
+      <div className="relative aspect-4/3 w-full bg-stone-100 dark:bg-stone-800 overflow-hidden">
         {!imgError && photoUrl ? (
           <img
             src={photoUrl}

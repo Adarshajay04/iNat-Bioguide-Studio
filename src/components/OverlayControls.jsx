@@ -51,7 +51,7 @@ export default function OverlayControls({
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
         {/* Left column: Top Overlay (Names) */}
-        <div className="lg:col-span-4 bg-stone-50 dark:bg-stone-850 rounded-lg p-3 border border-stone-200/80 dark:border-stone-750">
+        <div className="lg:col-span-4 bg-stone-50 dark:bg-stone-800/60 rounded-lg p-3 border border-stone-200/80 dark:border-stone-700">
           <div className="flex items-center gap-1.5 mb-2.5">
             <Type className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400" />
             <h4 className="text-[11px] font-semibold uppercase tracking-wider text-stone-700 dark:text-stone-300">
@@ -145,7 +145,7 @@ export default function OverlayControls({
         </div>
 
         {/* Center column: Bottom Overlay (Copyright & Attribution) */}
-        <div className="lg:col-span-4 bg-stone-50 dark:bg-stone-850 rounded-lg p-3 border border-stone-200/80 dark:border-stone-750">
+        <div className="lg:col-span-4 bg-stone-50 dark:bg-stone-800/60 rounded-lg p-3 border border-stone-200/80 dark:border-stone-700">
           <div className="flex items-center gap-1.5 mb-2.5">
             <ShieldAlert className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400" />
             <h4 className="text-[11px] font-semibold uppercase tracking-wider text-stone-700 dark:text-stone-300">

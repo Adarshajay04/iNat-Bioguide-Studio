@@ -270,7 +270,7 @@ export default function App() {
           <button
             type="button"
             onClick={() => setShowSettings((v) => !v)}
-            className="w-full flex items-center justify-between px-3.5 py-2 bg-white hover:bg-stone-50 dark:bg-stone-900 dark:hover:bg-stone-850 border border-stone-200 dark:border-stone-800 rounded-lg transition-colors cursor-pointer text-left shadow-2xs"
+            className="w-full flex items-center justify-between px-3.5 py-2 bg-white hover:bg-stone-50 dark:bg-stone-900 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-800 rounded-lg transition-colors cursor-pointer text-left shadow-2xs"
           >
             <div className="flex items-center gap-2">
               <Sliders className="w-3.5 h-3.5 text-stone-500 dark:text-stone-400" />
